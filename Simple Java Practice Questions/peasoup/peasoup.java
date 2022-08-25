@@ -6,9 +6,8 @@ public class peasoup {
         Scanner sc = new Scanner(System.in);
         int noOfRestaurant = sc.nextInt();
 
-        // boolean noPea = true;
-        // boolean noPancake = true;
-        String foundRestaurants = "";
+        String foundRestaurant = "";
+        boolean restaurantFound = false;
 
         for (int i = 0; i < noOfRestaurant; i++) {
             int noOfMenuItems = sc.nextInt();
@@ -19,40 +18,26 @@ public class peasoup {
             boolean pancakeFound = false;
             for (int j = 0; j < noOfMenuItems; j++) {
                 String menuItem = sc.nextLine();
-                // System.out.println(menuItem);
-                // if (menuItem.equals("pea soup") && peaFound == false) {
-                // peaFound = true;
-                // // noPea = false;
-                // if (pancakeFound) {
-                // System.out.println(restaurantName);
-                // }
-                // }
-                // if (menuItem.equals("pancakes") && pancakeFound == false) {
-                // pancakeFound = true;
-                // // noPancake = false;
-                // if (peaFound) {
-                // System.out.println(restaurantName);
-                // }
-                // }
+                if (restaurantFound) {
+                    continue;
+                }
                 if (menuItem.equals("pea soup")) {
                     peaFound = true;
                 }
                 if (menuItem.equals("pancakes")) {
                     pancakeFound = true;
                 }
-                if (pancakeFound && peaFound && foundRestaurants.length() == 0) {
-                    foundRestaurants = restaurantName;
+                if (pancakeFound && peaFound && restaurantFound == false) {
+                    foundRestaurant = restaurantName;
+                    restaurantFound = true;
                 }
             }
         }
 
-        // if (noPea || noPancake) {
-        // System.out.println("Anywhere is fine I guess");
-        // }
-        if (foundRestaurants.length() == 0) {
-            System.out.println("Anywhere is fine I guess");
+        if (restaurantFound) {
+            System.out.println(foundRestaurant);
         } else {
-            System.out.println(foundRestaurants);
+            System.out.println("Anywhere is fine I guess");
         }
 
         sc.close();
