@@ -1,3 +1,5 @@
+***REMOVED***
+
 import java.util.Scanner;
 
 public class t9spelling {
@@ -111,3 +113,39 @@ public class t9spelling {
         sc.close();
     }
 }
+
+// Scanner sc
+// int noOfCase = sc read int
+// sc.nextLine() //move cursor
+// for (int i = 0, i < noOfCase, i++) {
+//     StringBuilder t9 = new StringBuilder(": ")
+//     input = sc.nextLine()
+//     for (int j = 0 j < input.length() j++) {
+//         String numChar
+//         switch (input.charAt(j)) {
+//             case 'a':
+//                 numChar = "2"
+//                 break
+//             case 'b':
+//                 numChar = "22"
+//                 break
+//             case 'c':
+//                     ... for the rest of the chars
+
+//             default:
+//                 numChar = "0"
+//                 break
+//         }
+//         if (t9.charAt(t9.length() - 1) == numChar.charAt(0)) {
+//             t9.append(" ")
+//             t9.append(numChar)
+//         } else {
+//             t9.append(numChar)
+//         }
+//     }
+
+//     caseNo = i + 1
+
+//     print("Case #" + caseNo + t9)
+// }
+// sc.close()
