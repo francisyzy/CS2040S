@@ -1,37 +1,49 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class sortofsorting {
     public static void main(String[] args) {
         FastIO fio = new FastIO(); // create new instance
         int students = fio.nextInt(); // read int
+        // While there is student coming in
         while (students != 0) {
-            ArrayList<String> studentList = new ArrayList<String>();
+            ArrayList<student> studentList = new ArrayList<student>();
+            studentList.ensureCapacity(students);
+            // Get all student names for that class
             for (int i = 0; i < students; i++) {
-                studentList.add(fio.next());
+                studentList.add(new student(fio.next()));
             }
-            for (String student : radix(studentList)) {
+            // Java sort is stable
+            studentList.sort((s1, s2) -> s1.compare(s1, s2));
+            for (student student : (studentList)) {
                 fio.println(student);
             }
+
             fio.println("");
+            // Get next batch of student
             students = fio.nextInt();
         }
-        // double real = fio.nextDouble(); // read double
-        // String token = fio.next(); // read a single token
-        // String line = fio.nextLine(); // read an entire line
-        // fio.print(...); // print the ... contents
-        // fio.println(...); // print the ... contents with newline at the end
 
         fio.close(); // important; always close at the end of the code
     }
+}
 
-    static ArrayList<String> radix(ArrayList<String> array) {
-        List<String>[] buckets = (List<String>[]) Array.newInstance(List.class, 27);
-        for (int i = 0; i < 2; i++) {
+class student implements Comparator<student> {
+    String name;
 
-        }
-        return array;
+    student(String name) {
+        this.name = name;
+    }
+
+    // the overridden compare method to sort the first two characters only
+    @Override
+    public int compare(student s1, student s2) {
+        return s1.name.substring(0, 2).compareTo(s2.name.substring(0, 2));
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }
 
