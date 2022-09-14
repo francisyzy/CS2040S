@@ -1,3 +1,4 @@
+***REMOVED***
 import java.io.*;
 import java.util.*;
 
@@ -141,3 +142,83 @@ class FastIO extends PrintWriter {
         return str;
     }
 }
+
+// public class coconut {
+//     psvm {
+//         FastIO fio
+
+//         syllables = fio.nextInt // read int
+//         players = fio.nextInt // read int
+
+//         LinkedList ll = new LinkedList
+//         // Creates the players and adds them in order into the ll
+//         for (i = 0; i < players; i++) {
+//             ll.addLast(new hand(i))
+//         }
+//         do {
+//             for (i = 0; i < syllables - 1; i++) {
+//                 hand move = ll.removeFirst
+//                 ll.addLast(move)
+//             }
+//             hand current_hand = ll.removeFirst
+
+//             if (current_hand.handType equals folded) {
+//                 ll.addFirst(new hand(current_hand.playerId))
+//                 ll.addFirst(new hand(current_hand.playerId))
+//             } elif (current_hand.handType equals fist) {
+//                 ll.addLast(new hand(current_hand.playerId, palm))
+//             }
+//         } while (ll.size > 1)
+
+//         fio.print(ll.getFirst.playerId) // gets the first player and prints it
+//         fio.close // important; always close at the end of the code
+//     }
+// }
+
+// class hand {
+//     public String playerId;
+//     public String handType;
+
+//     /**
+//      * Create hand with id + 1. Code i = 0 but id starts @ 1
+//      * Hand of original state
+//      * 
+//      * @param id
+//      */
+//     public hand(id) {
+//         this.playerId = Integer.toString(id + 1)
+//         this.handType = folded;
+//     }
+
+//     /**
+//      * Create hand using ID from string, means copying from a previous hand. If
+//      * copying means the hand change to next state
+//      * 
+//      * @param id
+//      */
+//     public hand(String id) {
+//         this.playerId = id;
+//         this.handType = fist;
+//     }
+
+//     /**
+//      * Creates hand with given id and state of the hand
+//      * 
+//      * @param id
+//      * @param type
+//      */
+//     public hand(String id, String type) {
+//         this.playerId = id;
+//         this.handType = type;
+//     }
+
+//     /**
+//      * Was used to set the type of the hand so that new hands do not need to be
+//      * created
+//      * 
+//      * @param type (current hand type)
+//      */
+//     public void setHandType(String type) {
+//         this.handType = type;
+//     }
+// }
