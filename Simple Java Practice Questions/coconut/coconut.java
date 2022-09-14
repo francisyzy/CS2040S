@@ -5,15 +5,69 @@ public class coconut {
     public static void main(String[] args) {
         FastIO fio = new FastIO(); // create new instance
 
-        int num = fio.nextInt(); // read int
-        double real = fio.nextDouble(); // read double
-        String token = fio.next(); // read a single token
-        String line = fio.nextLine(); // read an entire line
-        fio.print("..."); // print the "..." contents
-        fio.println("..."); // print the "..." contents with newline at the end
+        int syllables = fio.nextInt(); // read int
+        int players = fio.nextInt(); // read int
+
+        LinkedList<hand> ll = new LinkedList<hand>();
+        for (int i = 0; i < players; i++) {
+            // fio.println(ll.toString());
+            ll.addLast(new hand(i));
+        }
+        // fio.println(ll.toString());
+        // System.out.println(syllables);
+        // System.out.println(players);
+        do {
+            // fio.println(ll.toString());
+            for (int i = 0; i < syllables - 1; i++) {
+                hand move = ll.removeFirst();
+                ll.addLast(move);
+            }
+            hand curr_hand = ll.removeFirst();
+            // fio.println(ll.toString());
+            
+            if (curr_hand.handType == "folded") {
+                // fio.println("ASD");
+                ll.addFirst(new hand(curr_hand.playerId));
+                ll.addFirst(new hand(curr_hand.playerId));
+            } else if (curr_hand.handType == "fist") {
+                ll.addLast(new hand(curr_hand.playerId, "palm"));
+            }
+        } while (ll.size() > 1);
+
+        fio.println(ll.getFirst().playerId); // print the "..." contents with newline at the end
 
         fio.close(); // important; always close at the end of the code
     }
+}
+
+class hand {
+    public String playerId;
+    public String handType;
+
+    public hand(int id) {
+        this.playerId = Integer.toString(id + 1);
+        this.handType = "folded";
+    }
+
+    public hand(String id) {
+        this.playerId = id;
+        this.handType = "fist";
+    }
+
+    public hand(String id, String type) {
+        this.playerId = id;
+        this.handType = type;
+    }
+
+    public void setHandType(String type) {
+        this.handType = type;
+    }
+
+    @Override
+    public String toString() {
+        return playerId;
+    }
+
 }
 
 /**
