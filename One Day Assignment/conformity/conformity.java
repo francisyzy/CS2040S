@@ -8,20 +8,22 @@ public class conformity {
         FastIO fio = new FastIO(); // create new instance
 
         int frosh = fio.nextInt(); // read number of frosh student's course list
+        int NUMBER_OF_COURSE = 5;
+        int LEN_COURSE_CODE = 3;
 
         HashMap<Long, Integer> courseOptions = new HashMap<Long, Integer>();
         for (int i = 0; i < frosh; i++) {
             // A student's combination
-            int[] froshie = new int[5];
-            for (int j = 0; j < 5; j++) {
+            int[] froshie = new int[NUMBER_OF_COURSE];
+            for (int j = 0; j < NUMBER_OF_COURSE; j++) {
                 int courseCode = fio.nextInt();
                 froshie[j] = courseCode;
             }
             Arrays.sort(froshie);
-            // Set capacity to 3 because module code is 3 digits long
-            StringBuilder sb = new StringBuilder(3);
+            // Set as module code is 3 digits long multiply by number of courses taken
+            StringBuilder sb = new StringBuilder(LEN_COURSE_CODE * NUMBER_OF_COURSE);
             // Stringify it to make it one big chunk of text
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < NUMBER_OF_COURSE; j++) {
                 sb.append(froshie[j]);
             }
             // Change it back into a number to sort
