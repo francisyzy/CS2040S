@@ -7,15 +7,11 @@ public class conformity {
     public static void main(String[] args) {
         FastIO fio = new FastIO(); // create new instance
 
-        int frosh = fio.nextInt(); // read int
+        int frosh = fio.nextInt(); // read number of frosh student's course list
 
-        // int[][] courses = new int[frosh][5];
-        // String[] courses = new String[frosh];
-        // long[] courses = new long[frosh];
         HashMap<Long, Integer> courseOptions = new HashMap<Long, Integer>();
-        // ArrayList<int> courses = new ArrayList<int>();
-        // ArrayList<HashMap<Integer>> courses = new ArrayList<HashMap<Integer>>();
         for (int i = 0; i < frosh; i++) {
+            // A student's combination
             int[] froshie = new int[5];
             for (int j = 0; j < 5; j++) {
                 int courseCode = fio.nextInt();
@@ -24,29 +20,55 @@ public class conformity {
             Arrays.sort(froshie);
             // Set capacity to 3 because module code is 3 digits long
             StringBuilder sb = new StringBuilder(3);
+            // Stringify it to make it one big chunk of text
             for (int j = 0; j < 5; j++) {
                 sb.append(froshie[j]);
             }
+            // Change it back into a number to sort
             long courseOption = Long.parseLong(sb.toString());
+            // Get number of students that is in that unique course combination
             int numberOfStudents = courseOptions.containsKey(courseOption) ? courseOptions.get(courseOption) : 0;
-            if (numberOfStudents == 0) {
+            if (numberOfStudents == 0) { // If no students means its a unique course combination, set it to 1 student
                 courseOptions.put(courseOption, 1);
-
-            } else {
+            } else { // Update the course's enrolment info
                 courseOptions.remove(courseOption);
                 courseOptions.put(courseOption, ++numberOfStudents);
             }
         }
-
+        // Get a collection of student enrolment
         int mostStudents = Collections.max(courseOptions.values());
+        // Count the most popular courses by looping thru the set of course
         int popularCourses = 0;
-        for (Map.Entry<Long, Integer> courseOptionSet : courseOptions.entrySet()) {
-            if (courseOptionSet.getValue() == mostStudents) {
+        // Find the courses that has the same number as the most popular course
+        for (Integer n : courseOptions.values()) {
+            if (n == mostStudents) {
                 popularCourses++;
             }
         }
-        popularCourses *= mostStudents;
-        fio.println(popularCourses);
+        fio.println(popularCourses * mostStudents);
+
+        // // Retry to get a faster timing by breaking the for loop to save n cycles.
+        // // Get a collection of student enrolment
+        // Collection<Integer> studentEnrolment = courseOptions.values();
+        // // Find the course with most students
+        // int mostStudents = Collections.max(studentEnrolment);
+        // // Make array to sort
+        // Integer[] studentEnrolmentArray = new Integer[studentEnrolment.size()];
+        // studentEnrolmentArray = studentEnrolment.toArray(studentEnrolmentArray);
+        // Arrays.sort(studentEnrolmentArray);
+
+        // // Get number of courses that is the most popular
+        // int popularCourses = 0;
+        // for (int i = studentEnrolmentArray.length - 1; i >= 0; i--) {
+        // if (studentEnrolmentArray[i] == mostStudents) {
+        // popularCourses++;
+        // // break to save some cycles
+        // } else {
+        // break;
+        // }
+        // }
+        // // End up it is still not faster
+        // fio.println(popularCourses * mostStudents);
 
         fio.close(); // important; always close at the end of the code
     }
