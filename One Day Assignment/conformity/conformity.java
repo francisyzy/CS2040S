@@ -11,7 +11,8 @@ public class conformity {
 
         // int[][] courses = new int[frosh][5];
         // String[] courses = new String[frosh];
-        long[] courses = new long[frosh];
+        // long[] courses = new long[frosh];
+        HashMap<Long, Integer> courseOptions = new HashMap<Long, Integer>();
         // ArrayList<int> courses = new ArrayList<int>();
         // ArrayList<HashMap<Integer>> courses = new ArrayList<HashMap<Integer>>();
         for (int i = 0; i < frosh; i++) {
@@ -21,50 +22,32 @@ public class conformity {
                 froshie[j] = courseCode;
             }
             Arrays.sort(froshie);
-            //Set capacity to 3 because module code is 3 digits long
+            // Set capacity to 3 because module code is 3 digits long
             StringBuilder sb = new StringBuilder(3);
             for (int j = 0; j < 5; j++) {
                 sb.append(froshie[j]);
             }
-            try {
+            long courseOption = Long.parseLong(sb.toString());
+            int numberOfStudents = courseOptions.containsKey(courseOption) ? courseOptions.get(courseOption) : 0;
+            if (numberOfStudents == 0) {
+                courseOptions.put(courseOption, 1);
 
-                courses[i] = Long.parseLong(sb.toString());
-            } catch (Exception e) {
-                // TODO: handle exception
-                fio.print(e);
-            }
-
-        }
-
-        Arrays.sort(courses);
-
-        ArrayList<Integer> duplicates = new ArrayList<Integer>();
-
-        // HashSet<Long> findDup = new HashSet<Long>();
-        // for (Long string : courses) {
-        // if(!findDup.add(string)){
-
-        // }
-        // }
-        int curr = 0;
-        int duplicate = 0;
-        // fio.println(courses[0]);
-        for (int i = 1; i < courses.length; i++) {
-            // fio.println(courses[i]);
-            if (courses[i] == courses[curr]) {
-                duplicate++;
             } else {
-                duplicates.add(duplicate);
-                duplicate = 0;
-                curr++;
+                courseOptions.remove(courseOption);
+                courseOptions.put(courseOption, ++numberOfStudents);
             }
         }
-        int maxNumberOfDuplicates = Collections.max(duplicates);
-        if (maxNumberOfDuplicates == 0) {
-            fio.println(frosh);
-        } else {
-            fio.println(maxNumberOfDuplicates + 1);
+
+        int mostStudents = Collections.max(courseOptions.values());
+        int popularCourses = 0;
+        for (Map.Entry<Long, Integer> courseOptionSet : courseOptions.entrySet()) {
+            if (courseOptionSet.getValue() == mostStudents) {
+                popularCourses++;
+            }
         }
+        popularCourses *= mostStudents;
+        fio.println(popularCourses);
+
         fio.close(); // important; always close at the end of the code
     }
 }
