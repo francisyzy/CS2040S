@@ -76,6 +76,43 @@ public class conformity {
     }
 }
 
+// class conformity 
+//     psvm 
+//         FastIO fio = FastIO
+
+//         int frosh = fio.nextInt
+
+//         HashMap<long, int> courseOptions = HashMap<long, int>
+//         for (int i = 0; i < frosh; i++) 
+//             int[] froshie = int[5]
+//             for (int j = 0; j < 5; j++) 
+//                 int courseCode = fio.nextInt
+//                 froshie[j] = courseCode
+            
+//             Arrays.sort(froshie)
+//             StringBuilder sb = StringBuilder()
+//             for (int j = 0; j < 5; j++) 
+//                 sb.append(froshie[j])
+            
+//             long courseOption = Long.parseLong(sb.toString)
+//             int numberOfStudents = courseOptions.containsKey(courseOption) ? courseOptions.get(courseOption) : 0
+//             if (numberOfStudents == 0) 
+//                 courseOptions.put(courseOption, 1)
+//              else 
+//                 courseOptions.remove(courseOption)
+//                 courseOptions.put(courseOption, ++numberOfStudents)
+            
+        
+//         int mostStudents = Collections.max(courseOptions.values)
+//         int popularCourses = 0
+//         for (int n in courseOptions.values) 
+//             if (n == mostStudents) 
+//                 popularCourses++
+            
+        
+//         fio.println(popularCourses * mostStudents)
+
+
 /**
  * Fast I/O
  * 
