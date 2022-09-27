@@ -1,3 +1,4 @@
+
 ***REMOVED***
 import java.io.*;
 import java.util.*;
@@ -6,13 +7,64 @@ public class conformity {
     public static void main(String[] args) {
         FastIO fio = new FastIO(); // create new instance
 
-        int num = fio.nextInt(); // read int
-        double real = fio.nextDouble(); // read double
-        String token = fio.next(); // read a single token
-        String line = fio.nextLine(); // read an entire line
-        fio.print("..."); // print the "..." contents
-        fio.println("..."); // print the "..." contents with newline at the end
+        int frosh = fio.nextInt(); // read int
 
+        // int[][] courses = new int[frosh][5];
+        // String[] courses = new String[frosh];
+        long[] courses = new long[frosh];
+        // ArrayList<int> courses = new ArrayList<int>();
+        // ArrayList<HashMap<Integer>> courses = new ArrayList<HashMap<Integer>>();
+        for (int i = 0; i < frosh; i++) {
+            int[] froshie = new int[5];
+            for (int j = 0; j < 5; j++) {
+                int courseCode = fio.nextInt();
+                froshie[j] = courseCode;
+            }
+            Arrays.sort(froshie);
+            //Set capacity to 3 because module code is 3 digits long
+            StringBuilder sb = new StringBuilder(3);
+            for (int j = 0; j < 5; j++) {
+                sb.append(froshie[j]);
+            }
+            try {
+
+                courses[i] = Long.parseLong(sb.toString());
+            } catch (Exception e) {
+                // TODO: handle exception
+                fio.print(e);
+            }
+
+        }
+
+        Arrays.sort(courses);
+
+        ArrayList<Integer> duplicates = new ArrayList<Integer>();
+
+        // HashSet<Long> findDup = new HashSet<Long>();
+        // for (Long string : courses) {
+        // if(!findDup.add(string)){
+
+        // }
+        // }
+        int curr = 0;
+        int duplicate = 0;
+        // fio.println(courses[0]);
+        for (int i = 1; i < courses.length; i++) {
+            // fio.println(courses[i]);
+            if (courses[i] == courses[curr]) {
+                duplicate++;
+            } else {
+                duplicates.add(duplicate);
+                duplicate = 0;
+                curr++;
+            }
+        }
+        int maxNumberOfDuplicates = Collections.max(duplicates);
+        if (maxNumberOfDuplicates == 0) {
+            fio.println(frosh);
+        } else {
+            fio.println(maxNumberOfDuplicates + 1);
+        }
         fio.close(); // important; always close at the end of the code
     }
 }
