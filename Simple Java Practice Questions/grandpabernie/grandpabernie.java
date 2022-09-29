@@ -36,6 +36,7 @@ public class grandpabernie {
             } else {
                 ArrayList<Integer> yearVisited = visited.get(countryQuery);
                 yearVisited.sort(null);
+                sorted.put(countryQuery, true);
                 visited.put(countryQuery, yearVisited);
                 fio.println(yearVisited.get(timeVisited - 1));
             }
