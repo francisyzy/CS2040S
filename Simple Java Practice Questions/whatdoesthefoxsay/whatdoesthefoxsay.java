@@ -6,12 +6,29 @@ public class whatdoesthefoxsay {
     public static void main(String[] args) {
         FastIO fio = new FastIO(); // create new instance
 
-        int num = fio.nextInt(); // read int
-        double real = fio.nextDouble(); // read double
-        String token = fio.next(); // read a single token
-        String line = fio.nextLine(); // read an entire line
-        fio.print("..."); // print the "..." contents
-        fio.println("..."); // print the "..." contents with newline at the end
+        int numOfTestCase = fio.nextInt(); // read int
+        for (int i = 0; i < numOfTestCase; i++) {
+            String[] sounds = fio.nextLine().split(" ");
+            String specificAnimalSound = fio.nextLine();
+            HashSet<String> animalSoundsSet = new HashSet<>();
+            while (true) {
+                String[] animalSounds = specificAnimalSound.split(" goes ");
+                if (animalSounds.length > 1) {
+                    animalSoundsSet.add(animalSounds[1]);
+                } else {
+                    break;
+                }
+                specificAnimalSound = fio.nextLine();
+            }
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < sounds.length; j++) {
+                if (!animalSoundsSet.contains(sounds[j])) {
+                    sb.append(sounds[j]);
+                    sb.append(' ');
+                }
+            }
+            fio.println(sb.toString());
+        }
 
         fio.close(); // important; always close at the end of the code
     }
