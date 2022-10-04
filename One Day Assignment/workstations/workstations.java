@@ -10,29 +10,68 @@ public class workstations {
         int n = fio.nextInt(); // read int
         int m = fio.nextInt(); // read int
 
-        ArrayList<researcher> researchers = new ArrayList<researcher>();
+        PriorityQueue<researcher> researchers = new PriorityQueue<researcher>();
+        PriorityQueue<Integer> spareComputer = new PriorityQueue<Integer>();
         for (int i = 0; i < n; i++) {
             int a = fio.nextInt(); // read int
             int s = fio.nextInt(); // read int
-            researchers.add(new researcher(a, s));
+            researcher researcher = new researcher(a, s);
+            researchers.add(researcher);
         }
-        int unlocks = 1;
-        int prev = 0;
-        for (int i = 1; i < n; i++) {
-            researcher researcher = researchers.get(i);
-            if (researcher.arrives < researchers.get(prev).leavesAfter()) {
-                unlocks++;
+        // int unlocks = 0;
+        int saved = 0;
+
+        for (int i = 0; i < n; i++) {
+            // System.out.println(spareComputer);
+            researcher researcher = researchers.poll();
+            // System.out.println("Researcher No: " + researcher);
+            if (spareComputer.isEmpty()) {
+                // System.out.println("no spare computers");
+                // unlocks++;
+                spareComputer.add(researcher.leavesAfter());
             } else {
-                prev++;
+                int computerAvailabilityChecker = spareComputer.peek();
+                boolean pcNotInUse = computerAvailabilityChecker <= researcher.arrives;
+                boolean pcNotExpired = researcher.arrives <= (computerAvailabilityChecker + m);
+                // if pc is expired, remove it and check availability again
+                while (!pcNotExpired && !spareComputer.isEmpty()) {
+                    spareComputer.poll();
+                    //Catch run time error
+                    if (!spareComputer.isEmpty()) {
+                        computerAvailabilityChecker = spareComputer.peek();
+                        pcNotInUse = computerAvailabilityChecker <= researcher.arrives;
+                        pcNotExpired = researcher.arrives <= (computerAvailabilityChecker + m);
+                    }
+                }
+
+                // System.out.println("spare computers");
+                // System.out.println(researcher.arrives);
+                // System.out.println("pcNotInUse " + pcNotInUse);
+                // System.out.println("pcNotExpired " + pcNotExpired);
+                // System.out.println(computerAvailable + m);
+                if (pcNotExpired && pcNotInUse) {
+                    // Saved an unlock
+                    // System.out.println("Never unlock another PC");
+                    // use the pc
+                    saved++;
+                    spareComputer.poll();
+                    // add the computer back in the pile of available computers after use
+                    spareComputer.add(researcher.leavesAfter());
+                } else {
+                    // System.out.println("Unlocked another PC");
+                    // unlocks++;
+                    spareComputer.add(researcher.leavesAfter());
+                }
             }
         }
-        fio.println(unlocks);
+        // fio.println(n - unlocks);
+        fio.println(saved);
 
         fio.close(); // important; always close at the end of the code
     }
 }
 
-class researcher {
+class researcher implements Comparable<researcher> {
     int arrives;
     int stays;
 
@@ -47,6 +86,16 @@ class researcher {
 
     int locksAt(int lockMins) {
         return leavesAfter() + lockMins;
+    }
+
+    @Override
+    public int compareTo(researcher incoming) {
+        return this.arrives - incoming.arrives;
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(arrives);
     }
 }
 
