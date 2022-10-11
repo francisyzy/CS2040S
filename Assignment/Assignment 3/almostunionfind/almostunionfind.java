@@ -1,3 +1,4 @@
+
 ***REMOVED***
 import java.io.*;
 import java.util.*;
@@ -43,17 +44,54 @@ public class almostunionfind {
     }
 }
 
+class Node {
+    public int index;
+    public Node parent;
+
+    public Node(int i) {
+        this.index = i;
+    }
+
+    public Node(int i, Node parent) {
+        this.index = i;
+        this.parent = parent;
+    }
+
+    void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    boolean isRoot() {
+        return this.parent == null;
+    }
+
+    int getParentId() {
+        return this.parent.index;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + index + " PID: " + parent.toString();
+    }
+}
+
 class DisjointUnionSets {
-    int[] sum, parent;
+    int[] sum, movement, size;
+    Node[] nodes;
 
     // Constructor
     public DisjointUnionSets(int n) {
         n++;
-        sum = new int[n];
-        parent = new int[n];
-        Arrays.setAll(this.parent, i -> -1);
-        Arrays.setAll(this.sum, i -> i);
-        parent[0] = 0;
+        this.sum = new int[n];
+        this.movement = new int[n];
+        this.size = new int[n];
+        this.nodes = new Node[n];
+        for (int i = 0; i < n; i++) {
+            this.nodes[i] = new Node(i);
+            this.movement[i] = i;
+            this.sum[i] = i;
+            this.size[i] = 1;
+        }
     }
 
     int findParentSum(int x) {
@@ -65,94 +103,57 @@ class DisjointUnionSets {
         return sum[x];
     }
 
-    int findParentIndex(int x) {
-        if (isRoot(x)) { // if I am parent, my own index will be returned
-            return x;
-        } else {
-            int parentIndex = parent[x];
-            int oneBefore = parentIndex;
-            while (parentIndex > 0) {
-                oneBefore = parentIndex;
-                parentIndex = parent[parentIndex];
-            }
-            parent[x] = oneBefore;
-            return oneBefore;
-
-            // parent[x] = findParentIndex(parent[x]);
-            // return parent[x];
-
-            // // Recursively find the representative.
-            // int result = findParentIndex(parent[x]);
-
-            // // We cache the result by moving i’s node
-            // // directly under the representative of this set
-            // parent[x] = result;
-
-            // // And then we return the result
-            // return result;
-        }
-    }
-
-    int findParentSize(int x) {
-        return Math.abs(parent[findParentIndex(x)]);
-    }
-
     int getSize(int x) {
-        return Math.abs(parent[x]);
+        return size[x];
     }
 
     boolean isRoot(int x) {
-        return parent[x] < 0;
+        return nodes[x].isRoot();
     }
 
-    boolean isSameSet(int x, int y) {
-        return findParentIndex(x) == findParentIndex(y);
-    }
-
-    void remove(int x) {
-        if (isRoot(x)) {
-            return;
+    int findParentIndex(int x) {
+        if (isRoot(x)) { // if I am parent, my own index will be returned
+            return x;
+        } else if (movement[x] == x) {
+            Node parent = nodes[x].parent;
+            while (parent.parent != null) {
+                nodes[x].parent = parent.parent;
+            }
+            return nodes[x].parent.index;
+            // return findParentIndex(nodes[x].getParentId());
+        } else {
+            return movement[x];
         }
-        int parentIndex = findParentIndex(x);
-        parent[parentIndex]++; // update parent
-        sum[parentIndex] -= x; // update parent
-        parent[x] = -1; // set itself as root
-        sum[x] = x; // reset its own sum
-    }
-
-    void remove(int x, int parentIndex) {
-        if (isRoot(x)) {
-            return;
-        }
-        parent[parentIndex]++; // update parent
-        sum[parentIndex] -= x; // update parent
-        parent[x] = -1; // set itself as root
-        sum[x] = x; // reset its own sum
     }
 
     void union(int p, int q) {
         if (isRoot(p) && isRoot(q)) { // means both are roots
             // Set P to be the parent now
-            parent[p] += parent[q]; // update the number of child nodes
-            parent[q] = p; // set parent of q into p
+            nodes[q].setParent(nodes[p]);
+            size[p]++;
             sum[p] += q;
             return;
         }
         int p_parentIndex = findParentIndex(p);
         int q_parentIndex = findParentIndex(q);
+        if (p_parentIndex == q_parentIndex) {
+            System.out.println(p_parentIndex);
+            System.out.println(q_parentIndex);
+            return;
+        }
         int p_parentSize = getSize(p_parentIndex);
         int q_parentSize = getSize(q_parentIndex);
         if (p_parentSize < q_parentSize) { // means q union is bigger than p
-            parent[q_parentIndex] += parent[p_parentIndex]; // update the number of child nodes
-            parent[p_parentIndex] = q_parentIndex; // set parent of p's as q's parent
-            parent[p] = q_parentIndex; // set p's parent as q's parent
-            sum[q_parentIndex] += p;
+            size[q_parentIndex] += size[p_parentIndex]; // update the number of child nodes
+            sum[q_parentIndex] += sum[p_parentIndex];
+            nodes[q_parentIndex].setParent(nodes[p_parentIndex]);
+            nodes[q].setParent(nodes[p_parentIndex]);
         } else { // means p union is bigger than q
             // or both roots are same size
-            parent[p_parentIndex] += parent[q_parentIndex]; // update the number of child nodes
-            parent[q_parentIndex] = p_parentIndex; // set parent of q as p's parent
-            parent[q] = p_parentIndex; // set q's parent as p's parent
-            sum[p_parentIndex] += q;
+            size[p_parentIndex] += size[q_parentIndex]; // update the number of child nodes
+            sum[p_parentIndex] += sum[q_parentIndex];
+            nodes[p_parentIndex].setParent(nodes[q_parentIndex]);
+            nodes[p].setParent(nodes[q_parentIndex]);
         }
     }
 
@@ -166,16 +167,18 @@ class DisjointUnionSets {
                 union(p, q);
                 return;
             }
+            movement[p] = q_parentIndex;
+            size[p_parentIndex]--;
+            sum[p_parentIndex] -= p;
 
-            remove(p, p_parentIndex);
-            union(q, p); // add both tgt
-            return;
+            size[q_parentIndex]++;
+            sum[q_parentIndex] += p;
         }
     }
 
     @Override
     public String toString() {
-        return Arrays.toString(parent);
+        return Arrays.toString(nodes);
     }
 
     public String sumString() {
