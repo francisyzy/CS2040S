@@ -80,13 +80,14 @@ class Node {
 }
 
 class DisjointUnionSets {
-    int[] sum, movement, size;
+    int[] movement, size;
+    long[] sum;
     Node[] nodes;
 
     // Constructor
     public DisjointUnionSets(int n) {
         n++;
-        this.sum = new int[n];
+        this.sum = new long[n];
         this.movement = new int[n];
         this.size = new int[n];
         this.nodes = new Node[n];
@@ -100,12 +101,12 @@ class DisjointUnionSets {
         this.size[0] = 0;
     }
 
-    int findParentSum(int x) {
+    long findParentSum(int x) {
         int parentIndex = findParentIndex(x);
         return sum[parentIndex];
     }
 
-    int findSum(int x) {
+    long findSum(int x) {
         return sum[x];
     }
 
