@@ -23,9 +23,10 @@ public class almostunionfind {
             if (opCode == 3) {
                 // System.out.println(disjointUnionSets.findParentsum(p));
                 // System.out.println(parent[p_parentIndex]);
-                fio.print(disjointUnionSets.findParentSize(p));
+                int parent = disjointUnionSets.findParentIndex(p);
+                fio.print(disjointUnionSets.getSize(parent));
                 fio.print(' ');
-                fio.println(disjointUnionSets.findSum(p));
+                fio.println(disjointUnionSets.findSum(parent));
                 // newline at the end
             } else {
                 int q = fio.nextInt(); // read int
@@ -55,9 +56,13 @@ class DisjointUnionSets {
         parent[0] = 0;
     }
 
-    int findSum(int x) {
+    int findParentSum(int x) {
         int parentIndex = findParentIndex(x);
         return sum[parentIndex];
+    }
+
+    int findSum(int x) {
+        return sum[x];
     }
 
     int findParentIndex(int x) {
@@ -72,6 +77,9 @@ class DisjointUnionSets {
             }
             parent[x] = oneBefore;
             return oneBefore;
+
+            // parent[x] = findParentIndex(parent[x]);
+            // return parent[x];
 
             // // Recursively find the representative.
             // int result = findParentIndex(parent[x]);
@@ -89,8 +97,16 @@ class DisjointUnionSets {
         return Math.abs(parent[findParentIndex(x)]);
     }
 
+    int getSize(int x) {
+        return Math.abs(parent[x]);
+    }
+
     boolean isRoot(int x) {
         return parent[x] < 0;
+    }
+
+    boolean isSameSet(int x, int y) {
+        return findParentIndex(x) == findParentIndex(y);
     }
 
     void remove(int x) {
@@ -104,33 +120,46 @@ class DisjointUnionSets {
         sum[x] = x; // reset its own sum
     }
 
+    void remove(int x, int parentIndex) {
+        if (isRoot(x)) {
+            return;
+        }
+        parent[parentIndex]++; // update parent
+        sum[parentIndex] -= x; // update parent
+        parent[x] = -1; // set itself as root
+        sum[x] = x; // reset its own sum
+    }
+
     void union(int p, int q) {
-        int p_parentSize = findParentSize(p);
-        int q_parentSize = findParentSize(q);
-        int p_parentIndex = findParentIndex(p);
-        int q_parentIndex = findParentIndex(q);
         if (isRoot(p) && isRoot(q)) { // means both are roots
             // Set P to be the parent now
             parent[p] += parent[q]; // update the number of child nodes
             parent[q] = p; // set parent of q into p
             sum[p] += q;
-        } else if (p_parentSize == q_parentSize) { // means both roots are same size
-            parent[p_parentIndex] += parent[q_parentIndex]; // update the number of child nodes
-            parent[q_parentIndex] = p_parentIndex; // set parent of q into p
-            sum[p_parentIndex] += q;
-        } else if (p_parentSize > q_parentSize) { // means p union is bigger than q
-            parent[p_parentIndex] += parent[q_parentIndex]; // update the number of child nodes
-            parent[q_parentIndex] = p_parentIndex; // set parent of q into p
-            sum[p_parentIndex] += q;
-        } else if (p_parentSize < q_parentSize) { // means q union is bigger than p
+            return;
+        }
+        int p_parentIndex = findParentIndex(p);
+        int q_parentIndex = findParentIndex(q);
+        int p_parentSize = getSize(p_parentIndex);
+        int q_parentSize = getSize(q_parentIndex);
+        if (p_parentSize < q_parentSize) { // means q union is bigger than p
             parent[q_parentIndex] += parent[p_parentIndex]; // update the number of child nodes
-            parent[p_parentIndex] = q_parentIndex; // set parent of q into p
+            parent[p_parentIndex] = q_parentIndex; // set parent of p's as q's parent
+            parent[p] = q_parentIndex; // set p's parent as q's parent
             sum[q_parentIndex] += p;
+        } else { // means p union is bigger than q
+            // or both roots are same size
+            parent[p_parentIndex] += parent[q_parentIndex]; // update the number of child nodes
+            parent[q_parentIndex] = p_parentIndex; // set parent of q as p's parent
+            parent[q] = p_parentIndex; // set q's parent as p's parent
+            sum[p_parentIndex] += q;
         }
     }
 
     void move(int p, int q) {
-        if (findParentIndex(p) == findParentIndex(q)) {
+        int p_parentIndex = findParentIndex(p);
+        int q_parentIndex = findParentIndex(q);
+        if (p_parentIndex == q_parentIndex) {
             return;// both parents same. Do nothing
         } else {
             if (isRoot(p) && isRoot(q)) { // means p & q is root
@@ -138,7 +167,7 @@ class DisjointUnionSets {
                 return;
             }
 
-            remove(p);
+            remove(p, p_parentIndex);
             union(q, p); // add both tgt
             return;
         }
