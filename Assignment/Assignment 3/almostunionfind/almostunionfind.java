@@ -59,9 +59,22 @@ class Node {
         this.parent = parent;
     }
 
-    boolean isRoot() {
-        return this.parent == null;
-    }
+    int findParentIndex(int x) {
+        if (isRoot(x)) { // if I am parent, my own index will be returned
+            return x;
+        } else {
+            int parentIndex = parent[x];
+            int oneBefore = parentIndex;
+            // int count = 0;
+            while (parentIndex > 0) {
+            // while (parentIndex > 0 && count < 10) {
+                // System.out.println(parentIndex);
+                // count++;
+                oneBefore = parentIndex;
+                parentIndex = parent[parentIndex];
+            }
+            parent[x] = oneBefore;
+            return oneBefore;
 
     int getParentId() {
         if (this.parent == null) { // If I have no parent, I am my own parent
@@ -174,8 +187,12 @@ class DisjointUnionSets {
         // }
         int p_parentSize = getSize(p_parentIndex);
         int q_parentSize = getSize(q_parentIndex);
-        // System.out.println("p_size" + p_parentSize);
-        // System.out.println("q_size" + q_parentSize);
+        // System.out.println(p_parentIndex);
+        // System.out.println(q_parentIndex);
+        if (p_parentIndex == q_parentIndex) {
+            // System.out.println("sameParent!");
+            return;
+        }
         if (p_parentSize < q_parentSize) { // means q union is bigger than p
             // q absorbs p nodes
             size[q_parentIndex] += size[p_parentIndex]; // update the number of child nodes
