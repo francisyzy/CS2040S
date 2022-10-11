@@ -23,7 +23,7 @@ public class almostunionfind {
             int opCode = fio.nextInt(); // read int
             int p = fio.nextInt(); // read int
             if (opCode == 3) {
-                disjointUnionSets.print(p, fio);
+                fio.println(disjointUnionSets.print(p));
             } else {
                 int q = fio.nextInt(); // read int
                 if (opCode == 1) { // union
@@ -40,12 +40,13 @@ public class almostunionfind {
 }
 
 class DisjointUnionSets {
-    int[] sum, parent, movement, size;
+    int[] parent, movement, size;
+    long[] sum;
 
     // Constructor
     public DisjointUnionSets(int n) {
         n++;
-        this.sum = new int[n];
+        this.sum = new long[n];
         this.movement = new int[n];
         this.size = new int[n];
         this.parent = new int[n];
@@ -59,13 +60,13 @@ class DisjointUnionSets {
         this.size[0] = 0;
     }
 
-    public Node(int i, Node parent) {
-        this.index = i;
-        this.parent = parent;
+    long findParentSum(int x) {
+        int parentIndex = findParentIndex(x);
+        return sum[parentIndex];
     }
 
-    void setParent(Node parent) {
-        this.parent = parent;
+    long findSum(int x) {
+        return sum[x];
     }
 
     int findParentIndex(int x) {
@@ -97,15 +98,14 @@ class DisjointUnionSets {
         int q_parentIndex = findParentIndex(q);
         // System.out.println(p_parentIndex);
         // System.out.println(q_parentIndex);
-        if (p_parentIndex == q_parentIndex) {
+        if (p_parentIndex != q_parentIndex) {
             // System.out.println("sameParent!");
-            return;
+            parent[p_parentIndex] = q_parentIndex;
+            size[q_parentIndex] = size[p_parentIndex] + size[q_parentIndex];
+            size[p_parentIndex] = 0;
+            sum[q_parentIndex] = sum[p_parentIndex] + sum[q_parentIndex];
+            sum[p_parentIndex] = 0;
         }
-        parent[p_parentIndex] = q_parentIndex;
-        size[q_parentIndex] = size[p_parentIndex] + size[q_parentIndex];
-        size[p_parentIndex] = 1;
-        sum[q_parentIndex] = sum[p_parentIndex] + sum[q_parentIndex];
-        sum[p_parentIndex] = p_parentIndex;
         // if (p_parentSize < q_parentSize) { // means q union is bigger than p
         // parent[q_parentIndex] += parent[p_parentIndex]; // update the number of child
         // nodes
@@ -126,9 +126,7 @@ class DisjointUnionSets {
     void move(int p, int q) {
         int p_parentIndex = findParentIndex(p);
         int q_parentIndex = findParentIndex(q);
-        if (p_parentIndex == q_parentIndex) {
-            return;// both parents same. Do nothing
-        } else {
+        if (p_parentIndex != q_parentIndex) {
             movement[p] = q_parentIndex;
             size[p_parentIndex]--;
             sum[p_parentIndex] -= p;
@@ -138,11 +136,15 @@ class DisjointUnionSets {
         }
     }
 
-    void print(int p, FastIO fio) {
+    // void print(int p) {
+    // nt = this.findParentIndex(p);
+    // ut.print(this.getSize(parent));
+    // ut.print(' ');
+    // ut.println(this.findSum(parent));
+    // }
+    String print(int p) {
         int parent = this.findParentIndex(p);
-        fio.print(this.getSize(parent));
-        fio.print(' ');
-        fio.println(this.findSum(parent));
+        return Integer.toString(this.getSize(parent)) + " " + Long.toString(this.findSum(parent));
     }
 
     @Override
