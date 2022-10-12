@@ -46,6 +46,39 @@ public class kattissquest {
     }
 }
 
+
+// n = fio.nextInt
+// TreeMap<Integer, PriorityQueue<Integer>> quests = new TreeMap
+// for (i = 0; i < n; i++) 
+//     String command = fio.next
+//     if (command.equals("add")) 
+//         e = fio.nextInt
+//         g = fio.nextInt
+//         if (quests.containsKey(e)) 
+//             PriorityQueue<Integer> gold = quests.get(e)
+//             gold.offer(g)
+//             quests.put(e, gold)
+//         else 
+//             PriorityQueue<Integer> gold = new PriorityQueue<Integer>(Collections.reverseOrder)
+//             gold.offer(g)
+//             quests.put(e, gold)
+//     else 
+//         availableEnergy = fio.nextInt
+//         long goldEarned = 0
+//         Map.Entry<Integer, PriorityQueue<Integer>> foundQuest = quests.floorEntry(availableEnergy)
+//         while (foundQuest != null) 
+//             PriorityQueue<Integer> goldValue = foundQuest.getValue
+//             if (goldValue.peek != null) 
+//                 availableEnergy -= foundQuest.getKey
+//                 goldEarned += goldValue.poll
+//             else 
+//                 quests.remove(foundQuest.getKey)
+//             foundQuest = quests.floorEntry(availableEnergy)
+        
+//         fio.println(goldEarned)
+// fio.close; 
+
+
 /**
  * Fast I/O
  * 
