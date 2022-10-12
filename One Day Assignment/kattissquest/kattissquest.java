@@ -8,20 +8,40 @@ public class kattissquest {
         FastIO fio = new FastIO(); // create new instance
 
         int n = fio.nextInt(); // read int
-        // TreeSet
-        // TreeMap
+        TreeMap<Integer, PriorityQueue<Integer>> quests = new TreeMap<>();
         for (int i = 0; i < n; i++) {
+            // System.out.println(quests);
             String command = fio.next(); // read a single token
             if (command.equals("add")) {
                 int e = fio.nextInt(); // read int
                 int g = fio.nextInt(); // read int
+                if (quests.containsKey(e)) {
+                    PriorityQueue<Integer> gold = quests.get(e);
+                    gold.offer(g);
+                    quests.put(e, gold);
+                } else {
+                    PriorityQueue<Integer> gold = new PriorityQueue<Integer>(Collections.reverseOrder());
+                    gold.offer(g);
+                    quests.put(e, gold);
+                }
             } else {
-                int x = fio.nextInt(); // read int
+                int availableEnergy = fio.nextInt(); // read int
+                long goldEarned = 0;
+                Map.Entry<Integer, PriorityQueue<Integer>> foundQuest = quests.floorEntry(availableEnergy);
+                while (foundQuest != null) {
+                    PriorityQueue<Integer> goldValue = foundQuest.getValue();
+                    if (goldValue.peek() != null) {
+                        availableEnergy -= foundQuest.getKey();
+                        goldEarned += goldValue.poll();
+                    } else {
+                        quests.remove(foundQuest.getKey());
+                    }
+                    foundQuest = quests.floorEntry(availableEnergy);
+                }
+                fio.println(goldEarned);
             }
 
         }
-        fio.println("..."); // print the "..." contents with newline at the end
-
         fio.close(); // important; always close at the end of the code
     }
 }
