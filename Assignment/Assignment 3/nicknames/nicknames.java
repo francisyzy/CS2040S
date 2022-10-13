@@ -1,3 +1,4 @@
+
 ***REMOVED***
 import java.io.*;
 import java.util.*;
@@ -5,13 +6,23 @@ import java.util.*;
 public class nicknames {
     public static void main(String[] args) {
         FastIO fio = new FastIO(); // create new instance
+        // Use AVL Tree
 
-        int num = fio.nextInt(); // read int
-        double real = fio.nextDouble(); // read double
-        String token = fio.next(); // read a single token
-        String line = fio.nextLine(); // read an entire line
-        fio.print("..."); // print the "..." contents
-        fio.println("..."); // print the "..." contents with newline at the end
+        TreeSet<String> names = new TreeSet<String>();
+
+        int numberOfNames = fio.nextInt(); // read int
+        for (int i = 0; i < numberOfNames; i++) {
+            String line = fio.nextLine(); // read an entire line
+            names.add(line);
+        }
+
+        int numberOfNickNames = fio.nextInt(); // read int
+        for (int i = 0; i < numberOfNickNames; i++) {
+            String line = fio.nextLine(); // read an entire line
+            SortedSet<String> found = names.subSet(line,
+                    String.format("%-10s", line).replace(' ', 'z'));
+            fio.println(found.size()); // print the "..." contents with newline at the end
+        }
 
         fio.close(); // important; always close at the end of the code
     }
