@@ -1,3 +1,4 @@
+
 ***REMOVED***
 import java.io.*;
 import java.util.*;
@@ -7,13 +8,21 @@ public class babynames {
         FastIO fio = new FastIO(); // create new instance
 
         int num = fio.nextInt(); // read int
-        while(num != 0){
+        while (num != 0) {
             switch (num) {
                 case 1:
-                    
+                    String name = fio.next();
+                    int gender = fio.nextInt();
                     break;
-            
-                default:
+                case 2:
+                    String removeName = fio.next();
+
+                    break;
+                case 3:
+
+                    break;
+
+                default: // case 4
                     break;
             }
             fio.println("..."); // print the "..." contents with newline at the end
