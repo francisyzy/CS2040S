@@ -8,6 +8,8 @@ public class almostunionfind {
         FastIO fio = new FastIO(); // create new instance
 
         int n = fio.nextInt(); // read int
+        
+        while(n!=0){
         int m = fio.nextInt(); // read int
 
         DisjointUnionSets disjointUnionSets = new DisjointUnionSets(n);
@@ -34,6 +36,12 @@ public class almostunionfind {
                 }
             }
         }
+        try {
+            n = fio.nextInt(); // read int
+        } catch (Exception e) {
+            break;
+        }
+    }
 
         fio.close(); // important; always close at the end of the code
     }
