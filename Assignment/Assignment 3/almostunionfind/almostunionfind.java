@@ -1,4 +1,3 @@
-
 ***REMOVED***
 import java.io.*;
 import java.util.*;
@@ -13,14 +12,13 @@ public class almostunionfind {
         int m = fio.nextInt(); // read int
 
         DisjointUnionSets disjointUnionSets = new DisjointUnionSets(n);
-        int[] display = new int[n + 1];
-        Arrays.setAll(display, i -> i);
+        // int[] display = new int[n + 1];
+        // Arrays.setAll(display, i -> i);
 
         for (int i = 0; i < m; i++) {
             // System.out.println("i: " + i);
             // System.out.println("whole display: " + Arrays.toString(display));
             // System.out.println("whole array : " + disjointUnionSets);
-            // System.out.println("whole size: " + disjointUnionSets.sizeString());
             // System.out.println("whole sum : " + disjointUnionSets.sumString());
             int opCode = fio.nextInt(); // read int
             int p = fio.nextInt(); // read int
@@ -37,9 +35,11 @@ public class almostunionfind {
             }
         }
         try {
+            
             n = fio.nextInt(); // read int
         } catch (Exception e) {
             break;
+            // TODO: handle exception
         }
     }
 
@@ -93,12 +93,12 @@ class DisjointUnionSets {
         return size[x];
     }
 
-    int getSize(int x) {
-        return size[x];
+    boolean isRoot(int x) {
+        return parent[x] < 0;
     }
 
-    boolean isRoot(int x) {
-        return nodes[x].isRoot();
+    boolean isSameSet(int x, int y) {
+        return findParentIndex(x) == findParentIndex(y);
     }
 
     void union(int p, int q) {
@@ -157,15 +157,11 @@ class DisjointUnionSets {
 
     @Override
     public String toString() {
-        return Arrays.toString(nodes);
+        return Arrays.toString(parent);
     }
 
     public String sumString() {
         return Arrays.toString(sum);
-    }
-
-    public String sizeString() {
-        return Arrays.toString(size);
     }
 }
 
