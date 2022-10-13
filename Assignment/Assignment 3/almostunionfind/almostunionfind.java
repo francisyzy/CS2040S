@@ -7,42 +7,31 @@ public class almostunionfind {
         FastIO fio = new FastIO(); // create new instance
 
         int n = fio.nextInt(); // read int
-        
-        while(n!=0){
-        int m = fio.nextInt(); // read int
-
-        DisjointUnionSets disjointUnionSets = new DisjointUnionSets(n);
-        // int[] display = new int[n + 1];
-        // Arrays.setAll(display, i -> i);
-
-        for (int i = 0; i < m; i++) {
-            // System.out.println("i: " + i);
-            // System.out.println("whole display: " + Arrays.toString(display));
-            // System.out.println("whole array : " + disjointUnionSets);
-            // System.out.println("whole sum : " + disjointUnionSets.sumString());
-            int opCode = fio.nextInt(); // read int
-            int p = fio.nextInt(); // read int
-            if (opCode == 3) {
-                fio.println(disjointUnionSets.print(p));
-            } else {
-                int q = fio.nextInt(); // read int
-                if (opCode == 1) { // union
-                    disjointUnionSets.union(p, q);
-                }
-                if (opCode == 2) { // move
-                    disjointUnionSets.move(p, q);
+        while (true) {
+            int m = fio.nextInt(); // read int
+            DisjointUnionSets disjointUnionSets = new DisjointUnionSets(n);
+            for (int i = 0; i < m; i++) {
+                int opCode = fio.nextInt(); // read int
+                int p = fio.nextInt(); // read int
+                if (opCode == 3) {
+                    disjointUnionSets.print(p, fio);
+                } else {
+                    int q = fio.nextInt(); // read int
+                    if (opCode == 1) { // union
+                        disjointUnionSets.union(p, q);
+                    }
+                    if (opCode == 2) { // move
+                        disjointUnionSets.move(p, q);
+                    }
                 }
             }
+            try {
+                n = fio.nextInt(); // read next test case
+            } catch (Exception e) {
+                // No more test cases
+                break;
+            }
         }
-        try {
-            
-            n = fio.nextInt(); // read int
-        } catch (Exception e) {
-            break;
-            // TODO: handle exception
-        }
-    }
-
         fio.close(); // important; always close at the end of the code
     }
 }
@@ -68,15 +57,33 @@ class DisjointUnionSets {
         this.size[0] = 0;
     }
 
+    /**
+     * Find the set's sum
+     * 
+     * @param x
+     * @return long
+     */
     long findParentSum(int x) {
         int parentIndex = findParentIndex(x);
         return sum[parentIndex];
     }
 
+    /**
+     * Find the sum of the represented node
+     * 
+     * @param x
+     * @return long
+     */
     long findSum(int x) {
         return sum[x];
     }
 
+    /**
+     * Find the parent/root of the element
+     * 
+     * @param x
+     * @return int
+     */
     int findParentIndex(int x) {
         int parentIndex = movement[x];
         while (parentIndex != parent[parentIndex]) {
@@ -85,52 +92,72 @@ class DisjointUnionSets {
         return parentIndex;
     }
 
+    /**
+     * Get the size of the set that element x belongs in
+     * 
+     * @param x
+     * @return int
+     */
     int findParentSize(int x) {
         return size[findParentIndex(x)];
     }
 
+    /**
+     * Get the size of the element (should be root then get size is more better)
+     * 
+     * @param x
+     * @return int
+     */
     int getSize(int x) {
         return size[x];
     }
 
-    boolean isRoot(int x) {
-        return parent[x] < 0;
+    /**
+     * Checks if both elements are in the same set
+     * Not used because checking within the function itself is faster
+     * 
+     * @param p
+     * @param q
+     * @return boolean
+     */
+    boolean isSameSet(int p, int q) {
+        return findParentIndex(p) == findParentIndex(q);
     }
 
-    boolean isSameSet(int x, int y) {
-        return findParentIndex(x) == findParentIndex(y);
-    }
-
+    /**
+     * Union the sets with element p & q
+     * 
+     * @param p
+     * @param q
+     */
     void union(int p, int q) {
         int p_parentIndex = findParentIndex(p);
         int q_parentIndex = findParentIndex(q);
-        // System.out.println(p_parentIndex);
-        // System.out.println(q_parentIndex);
-        if (p_parentIndex != q_parentIndex) {
+        if (p_parentIndex == q_parentIndex) {
             // System.out.println("sameParent!");
-            parent[p_parentIndex] = q_parentIndex;
-            size[q_parentIndex] = size[p_parentIndex] + size[q_parentIndex];
-            size[p_parentIndex] = 0;
-            sum[q_parentIndex] = sum[p_parentIndex] + sum[q_parentIndex];
-            sum[p_parentIndex] = 0;
+            return;
         }
-        // if (p_parentSize < q_parentSize) { // means q union is bigger than p
-        // parent[q_parentIndex] += parent[p_parentIndex]; // update the number of child
-        // nodes
-        // parent[p_parentIndex] = q_parentIndex; // set parent of p's as q's parent
-        // parent[p] = q_parentIndex; // set p's parent as q's parent
-        // sum[q_parentIndex] += p;
-        // } else { // means p union is bigger than q
-        // // or both roots are same size
-        // parent[p_parentIndex] += parent[q_parentIndex]; // update the number of child
-        // nodes
-        // parent[q_parentIndex] = p_parentIndex; // set parent of q as p's parent
-        // parent[q] = p_parentIndex; // set q's parent as p's parent
-        // sum[p_parentIndex] += q;
-        // }
+        int p_parentSize = getSize(p_parentIndex);
+        int q_parentSize = getSize(q_parentIndex);
+        if (p_parentSize < q_parentSize) { // means q union is bigger than p
+            size[q_parentIndex] += size[p_parentIndex]; // update the number of child nodes
+            sum[q_parentIndex] += sum[p_parentIndex]; // update sum
+            parent[p_parentIndex] = q_parentIndex; // set parent of p's as q's parent
+        } else { // means p union is bigger than q
+            // or both roots are same size
+            size[p_parentIndex] += size[q_parentIndex]; // update the number of child nodes
+            sum[p_parentIndex] += sum[q_parentIndex]; // update sum
+            parent[q_parentIndex] = p_parentIndex; // set parent of q as p's parent
+        }
 
     }
 
+    /**
+     * Move element p into the set containing q
+     * 
+     * @param p
+     * @param q
+     */
     void move(int p, int q) {
         int p_parentIndex = findParentIndex(p);
         int q_parentIndex = findParentIndex(q);
@@ -144,22 +171,34 @@ class DisjointUnionSets {
         }
     }
 
-    // void print(int p) {
-    // nt = this.findParentIndex(p);
-    // ut.print(this.getSize(parent));
-    // ut.print(' ');
-    // ut.println(this.findSum(parent));
-    // }
-    String print(int p) {
+    /**
+     * Print the size and sum of the set
+     * 
+     * @param p
+     * @param fio
+     */
+    void print(int p, FastIO fio) {
         int parent = this.findParentIndex(p);
-        return Integer.toString(this.getSize(parent)) + " " + Long.toString(this.findSum(parent));
+        fio.print(Integer.toString(this.getSize(parent)));
+        fio.print(" ");
+        fio.println(Long.toString(this.findSum(parent)));
     }
 
+    /**
+     * Default toString of parent nodes
+     * 
+     * @return String
+     */
     @Override
     public String toString() {
         return Arrays.toString(parent);
     }
 
+    /**
+     * Returns sum array string
+     * 
+     * @return String
+     */
     public String sumString() {
         return Arrays.toString(sum);
     }
