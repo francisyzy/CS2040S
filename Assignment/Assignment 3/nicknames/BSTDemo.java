@@ -6,7 +6,7 @@ class BSTDemo {
     public static void main(String[] args) throws Exception {
         BST T = new BST(); // an empty BST
 
-        String[] sample = new String[] { "Alice", "Bob", "Charlie", "Eve", "Mallory", "AliceA" };
+        String[] sample = new String[] { "Alice", "Bob", "Charlie", "Eve", "Mallory", "AliceA", "Alice" };
 
         // Sample BST as shown in Lecture
         for (int i = 0; i < sample.length; i++) {
@@ -30,10 +30,18 @@ class BSTDemo {
             System.out.println(T.getSize(thingy));
         }
 
-        System.out.println("Find Min: " + T.findMin()); // 4
-        System.out.println("Find Max: " + T.findMax()); // 71
+        System.out.println("Find Min: " + T.findMin());
+        System.out.println("Find Max: " + T.findMax());
+
+        System.out.println(T.findNumNickname("z"));
 
         T.inorder(); // The BST: 4, 5, 6, 7, 15, 23, 50, 71
+
+        String print = "a";
+        for (int i = 0; i < 10; i++) {
+            System.out.println(print);
+            print += "d";
+        }
 
     }
 }
@@ -197,6 +205,24 @@ class BST {
         System.out.print(" "); // visit this BST node
         System.out.print(T.key); // visit this BST node
         inorder(T.right); // recursively go to the right
+    }
+
+    public int findNumNickname(String v) {
+        return findNumNickname(root, v);
+    }
+
+    public int findNumNickname(BSTVertex T, String v) {
+        if (T == null) {
+            return 0;
+        }
+        if (T.key.indexOf(v) == 0) {// Found nickname!
+            return 1 + findNumNickname(T.right, v) + findNumNickname(T.left, v);
+        }
+        if (T.key.compareTo(v) > 0) { // search to the right
+            return findNumNickname(T.right, v);
+        } else { // search to the left
+            return findNumNickname(T.left, v);
+        }
     }
 
     // public method called to insert a new key with value v into BST
