@@ -6,29 +6,39 @@ class BSTDemo {
     public static void main(String[] args) throws Exception {
         BST T = new BST(); // an empty BST
 
+        int[] sample = new int[] { 15, 23, 6, 71, 50, 4, 7, 5 };
+
         // Sample BST as shown in Lecture
-        T.insert(15);
-        T.insert(23);
-        T.insert(6);
-        T.insert(71);
-        T.insert(50);
-        T.insert(4);
-        T.insert(7);
-        T.insert(5);
+        for (int i = 0; i < sample.length; i++) {
+            T.insert(sample[i]);
+        }
+        T.inorder();
+        System.out.print("Root Size:");
+        System.out.println(T.getRootSize());
 
-        System.out.println(T.search(71)); // found, 71
-        System.out.println(T.search(7)); // found, 7
-        System.out.println(T.search(22)); // not found, -1
+        System.out.print("Root Height:");
+        System.out.println(T.getRootHeight());
 
-        System.out.println(T.findMin()); // 4
-        System.out.println(T.findMax()); // 71
+        for (int i = 0; i < sample.length; i++) {
+            int thingy = sample[i];
+            System.out.print("Searching " + thingy);
+            System.out.print(" ");
+            System.out.print(T.search(thingy));
+            System.out.print(" Height: ");
+            System.out.print(T.getHeight(thingy));
+            System.out.print(" Size: ");
+            System.out.println(T.getSize(thingy));
+        }
 
-        System.out.println(T.successor(23)); // 50
-        System.out.println(T.successor(7)); // 15
-        System.out.println(T.successor(71)); // -1
-        System.out.println(T.predecessor(23)); // 15
-        System.out.println(T.predecessor(7)); // 6
-        System.out.println(T.predecessor(71)); // 50
+        System.out.println("Find Min: " + T.findMin()); // 4
+        System.out.println("Find Max: " + T.findMax()); // 71
+
+        System.out.println("Find Successor: " + T.successor(23)); // 50
+        System.out.println("Find Successor: " + T.successor(7)); // 15
+        System.out.println("Find Successor: " + T.successor(71)); // -1
+        System.out.println("Find Predecessor: " + T.predecessor(23)); // 15
+        System.out.println("Find Predecessor: " + T.predecessor(7)); // 6
+        System.out.println("Find Predecessor: " + T.predecessor(71)); // 50
 
         T.inorder(); // The BST: 4, 5, 6, 7, 15, 23, 50, 71
 
@@ -86,6 +96,34 @@ class BST {
             return search(T.right, v); // search to the right
         else
             return search(T.left, v); // search to the left
+    }
+
+    // public method called to search for a size v.
+    // Return v if it is found in the BST otherwise return -1.
+    // Here the assumption is that -1 is never a valid size value.
+    public int getSize(int v) {
+        BSTVertex res = search(root, v);
+        return res == null ? -1 : (res.left == null ? 0 : res.left.size) + (res.right == null ? 0 : res.right.size) + 1;
+    }
+
+    // public method called to get root size
+    // Return v if it BST is not null otherwise return -1.
+    // Here the assumption is that -1 is never a valid size value.
+    public int getRootSize() {
+        return (root.left == null ? 0 : root.left.size) + (root.right == null ? 0 : root.right.size) + 1;
+    }
+
+    // public method called to search for a size v.
+    // Return v if it is found in the BST otherwise return -1.
+    // Here the assumption is that -1 is never a valid size value.
+    public int getHeight(int v) {
+        BSTVertex res = search(root, v);
+        return res == null ? -1
+                : max(res.left == null ? -1 : res.left.height, res.right == null ? -1 : res.right.height) + 1;
+    }
+
+    public int getRootHeight() {
+        return max(root.left == null ? -1 : root.left.height, root.right == null ? -1 : root.right.height) + 1;
     }
 
     // public method called to find Minimum key value in BST
@@ -193,28 +231,35 @@ class BST {
             T.left = insert(T.left, v);
             T.left.parent = T;
         }
+        T.height = max(T.left == null ? -1 : T.left.height, T.right == null ? -1 : T.right.height) + 1;
+        T.size = (T.left == null ? 0 : T.left.size) + (T.right == null ? 0 : T.right.size) + 1;
 
-        T.height = max(T.left == null ? -1 : T.left.height, T.right == null ? -1 :
-        T.right.height) + 1;
-
-        T.size = (T.left == null ? 0 : T.left.size) + (T.right == null ? 0 :
-        T.right.size) + 1;
-
-        if (bf(T) == 2 && 0 <= bf(T.left) && bf(T.left) <= 1) {
-        rotateRight(T);
-        } else if (bf(T) == 2 && bf(T.left) == -1) {
-        rotateLeft(T.left);
-        rotateRight(T);
-        } else if (bf(T) == -2 && -1 <= bf(T.right) && bf(T.right) <= 0) {
-        rotateLeft(T);
-        } else if (bf(T) == -2 && bf(T.right) == -1) {
-        rotateRight(T.right);
-        rotateLeft(T);
-        }
-
-        return T; // return the updated BST
+        return balanceTree(T); // return the updated BST
     }
 
+    private BSTVertex balanceTree(BSTVertex T) {
+
+        if (bf(T) == 2 && 0 <= bf(T.left) && bf(T.left) <= 1) {
+            // System.out.println("Need to rotate right");
+            return rotateRight(T);
+        } else if (bf(T) == 2 && bf(T.left) == -1) {
+            // System.out.println("Need left then right");
+            rotateLeft(T.left);
+            return rotateRight(T);
+        } else if (bf(T) == -2 && -1 <= bf(T.right) && bf(T.right) <= 0) {
+            // System.out.println("Need to rotate right");
+            return rotateLeft(T);
+        } else if (bf(T) == -2 && bf(T.right) == -1) {
+            // System.out.println("Need right then left");
+            rotateRight(T.right);
+            return rotateLeft(T);
+        } else {
+            // System.out.println("Tree is is balanced");
+            return T;
+        }
+    }
+
+    // Balance factor
     public static int bf(BSTVertex T) {
         if (T.left != null & T.right != null) {
             return T.left.height - T.right.height;
