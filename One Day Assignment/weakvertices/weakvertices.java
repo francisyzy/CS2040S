@@ -66,6 +66,56 @@ public class weakvertices {
     }
 }
 
+// weakvertices 
+//     psvm 
+//         FastIO fio = new FastIO
+
+//         int numOfVertices = fio.nextInt
+//         while (numOfVertices != -1) 
+//             int[][] adjMatrix = new int[numOfVertices][numOfVertices]
+//             int[] count = new int[numOfVertices]
+//             for (int i = 0; i < numOfVertices; i++) 
+//                 for (int j = 0; j < numOfVertices; j++) 
+//                     int vertex = fio.nextInt
+//                     adjMatrix[i][j] = vertex
+//                     if (vertex == 1) 
+//                         count[i]++
+//             bool[] triangle = new bool[numOfVertices]
+//             for (int i = 0; i < numOfVertices; i++) 
+//                 triangle[i] = false
+//                 if (count[i] == 1)  // skip checking if the guy only have one connection because no way u can form a
+//                                      // triangle using one line
+//                     continue
+                
+//                 for (int j = 0; j < numOfVertices; j++) 
+//                     for (int k = 0; k < numOfVertices; k++) 
+//                         if (i != j && i != k && j != k) 
+//                             // If they are the same numbers, they will check if [1][1] == 1 which is never
+//                             // going to be true, save compute
+//                             if (edgeExist(adjMatrix, i, j) // if 3 edges exist, means there is a triangle
+//                                     && edgeExist(adjMatrix, i, k)
+//                                     && edgeExist(adjMatrix, j, k)) 
+//                                 triangle[i] = true
+
+//             // Prints out the vectors that have no triangles found
+//             for (int i = 0; i < triangle.length; i++) 
+//                 if (!triangle[i]) 
+//                     fio.print(i)
+//                     fio.print(" ")
+                
+//             fio.println();
+//             numOfVertices = fio.nextInt;
+
+//         fio.close;
+    
+
+//     bool edgeExist(int[][] adjMatrix, int x, int y) 
+//         if (adjMatrix[x][y] == 1 && adjMatrix[y][x] == 1) 
+//             return true
+        
+//         return false
+    
+
 /**
  * Fast I/O
  * 
