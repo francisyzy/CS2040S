@@ -25,8 +25,6 @@ public class islands3 {
 
             int count = 0;
             Queue<IntegerPair> toSearch = new ArrayDeque<IntegerPair>();
-            toSearch.add(new IntegerPair(0, 0)); // search from 0 0
-
             for (int i = 0; i < r; i++) {
                 for (int j = 0; j < c; j++) {
                     // C = clouds
@@ -35,7 +33,6 @@ public class islands3 {
                     if (grid[i][j] == 'L' && visited[i][j] == false) {
                         count++;
                         toSearch.add(new IntegerPair(i, j));
-                        visited[i][j] = true;
                         BFS(toSearch, grid, visited, r, c);
                     }
                 }
@@ -57,25 +54,30 @@ public class islands3 {
             // Check up
             int x = search.x;
             int y = search.y;
+            visited[x][y] = true;
             if (search.x - 1 >= 0) {
                 x = search.x - 1;
                 updateSearch(toSearch, grid, visited, x, y);
             }
+            x = search.x; //reset x value
             // Check Down
             if (search.x + 1 < r) {
                 x = search.x + 1;
                 updateSearch(toSearch, grid, visited, x, y);
             }
+            x = search.x; //reset x value
             // Check Left
             if (search.y - 1 >= 0) {
                 y = search.y - 1;
                 updateSearch(toSearch, grid, visited, x, y);
             }
+            y = search.y; //reset y value
             // Check Right
             if (search.y + 1 < c) {
                 y = search.y + 1;
                 updateSearch(toSearch, grid, visited, x, y);
             }
+            y = search.y; //reset y value
         }
     }
 
