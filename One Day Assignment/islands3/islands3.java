@@ -8,50 +8,84 @@ public class islands3 {
         FastIO fio = new FastIO(); // create new instance
 
         int r = fio.nextInt(); // read int
-        int c = fio.nextInt(); // read int
-        char[][] grid = new char[r][c];
-        boolean[][] visited = new boolean[r][c];
-        for (int i = 0; i < r; i++) {
-            String line = fio.nextLine(); // read an entire line
-            for (int j = 0; j < c; j++) {
-                // C = clouds
-                // W = water
-                // L = land
-                grid[i][j] = line.charAt(i);
-                if (line.charAt(i) == 'W') {
-                    visited[i][j] = true;
-                } else {
-                    visited[i][j] = false;
+        while (r != 0) {
+
+            int c = fio.nextInt(); // read int
+            char[][] grid = new char[r][c];
+            boolean[][] visited = new boolean[r][c];
+            for (int i = 0; i < r; i++) {
+                String line = fio.nextLine(); // read an entire line
+                for (int j = 0; j < c; j++) {
+                    // C = clouds
+                    // W = water
+                    // L = land
+                    grid[i][j] = line.charAt(j);
                 }
             }
-        }
 
-        int count = 0;
-        Queue<IntegerPair> toSearch = new ArrayDeque<IntegerPair>();
-        // toSearch.add(new IntegerPair(0, 0)); // search from 0 0
+            int count = 0;
+            Queue<IntegerPair> toSearch = new ArrayDeque<IntegerPair>();
+            toSearch.add(new IntegerPair(0, 0)); // search from 0 0
 
-        for (int i = 0; i < r; i++) {
-            for (int j = 0; j < c; j++) {
-                // C = clouds
-                // W = water
-                // L = land
-                if (grid[i][j] == 'L' && visited[i][j] == false) {
-                    if (i > 0 && j > 0 && i + 1 < r && j + 1 < c) {
+            for (int i = 0; i < r; i++) {
+                for (int j = 0; j < c; j++) {
+                    // C = clouds
+                    // W = water
+                    // L = land
+                    if (grid[i][j] == 'L' && visited[i][j] == false) {
                         count++;
                         toSearch.add(new IntegerPair(i, j));
                         visited[i][j] = true;
-                        BFS(toSearch, grid, visited);
+                        BFS(toSearch, grid, visited, r, c);
                     }
                 }
             }
+
+            fio.println(count);
+            try {
+                r = fio.nextInt(); // read int
+            } catch (Exception e) {
+                break;
+            }
         }
-
-        fio.println(count);
-
         fio.close(); // important; always close at the end of the code
     }
 
-    static void BFS(Queue<IntegerPair> toSearch, char[][] grid, boolean[][] visited) {
+    static void BFS(Queue<IntegerPair> toSearch, char[][] grid, boolean[][] visited, int r, int c) {
+        while (!toSearch.isEmpty()) {
+            IntegerPair search = toSearch.poll();
+            // Check up
+            int x = search.x;
+            int y = search.y;
+            if (search.x - 1 >= 0) {
+                x = search.x - 1;
+                updateSearch(toSearch, grid, visited, x, y);
+            }
+            // Check Down
+            if (search.x + 1 < r) {
+                x = search.x + 1;
+                updateSearch(toSearch, grid, visited, x, y);
+            }
+            // Check Left
+            if (search.y - 1 >= 0) {
+                y = search.y - 1;
+                updateSearch(toSearch, grid, visited, x, y);
+            }
+            // Check Right
+            if (search.y + 1 < c) {
+                y = search.y + 1;
+                updateSearch(toSearch, grid, visited, x, y);
+            }
+        }
+    }
+
+    static void updateSearch(Queue<IntegerPair> toSearch, char[][] grid, boolean[][] visited, int x, int y) {
+        if (visited[x][y] == false) {
+            if (grid[x][y] == 'L' || grid[x][y] == 'C') {
+                visited[x][y] = true;
+                toSearch.add(new IntegerPair(x, y));
+            }
+        }
 
     }
 }
