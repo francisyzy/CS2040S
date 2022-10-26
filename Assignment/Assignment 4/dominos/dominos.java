@@ -10,13 +10,19 @@ public class dominos {
         int numOfTestCase = fio.nextInt(); // read int
         for (int i = 0; i < numOfTestCase; i++) {
             int numberOfDominoTiles = fio.nextInt(); // read int
-            int numberOfLines = fio.nextInt(); // read int
+            int numberOfEdges = fio.nextInt(); // read int
 
-            Triple[] edgeList = new Triple[numberOfLines];
-            for (int j = 0; j < numberOfLines; j++) {
+            int[] nodes = new int[numberOfDominoTiles];
+            IntegerPair[] edgeList = new IntegerPair[numberOfEdges];
+            for (int j = 0; j < numberOfEdges; j++) {
                 int x = fio.nextInt(); // read int
                 int y = fio.nextInt(); // read int
+                edgeList[j] = new IntegerPair(x, y);
                 // x will cause y to fall
+            }
+            int count = 0;
+            for (int j = 0; j < numberOfDominoTiles; j++) {
+                nodes[j] = 0;
             }
             // Print out number of disconnected graphs
             fio.println("..."); // print the "..." contents with newline at the end
@@ -26,27 +32,25 @@ public class dominos {
     }
 }
 
-class Triple {
-    private final int first;
-    private final int second;
-    private final int third;
+class IntegerPair {
+    int x, y;
 
-    public Triple(int first, int second, int third) {
-        this.first = first;
-        this.second = second;
-        this.third = third;
+    IntegerPair(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public int getFirst() {
-        return first;
+    @Override
+    public boolean equals(Object in) {
+        if (this != in) {
+            return false;
+        }
+        return false;
     }
 
-    public int getSecond() {
-        return second;
-    }
-
-    public int getThird() {
-        return third;
+    @Override
+    public String toString() {
+        return x + " " + y;
     }
 }
 
