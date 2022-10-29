@@ -51,9 +51,9 @@ public class islands3 {
     static void BFS(Queue<IntegerPair> toSearch, char[][] grid, boolean[][] visited, int r, int c) {
         while (!toSearch.isEmpty()) {
             IntegerPair search = toSearch.poll();
-            // Check up
             int x = search.x;
             int y = search.y;
+            // Check up
             visited[x][y] = true;
             if (search.x - 1 >= 0) {
                 x = search.x - 1;
@@ -88,7 +88,6 @@ public class islands3 {
                 toSearch.add(new IntegerPair(x, y));
             }
         }
-
     }
 }
 
