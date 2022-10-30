@@ -9,13 +9,13 @@ public class millionairemadness {
 
         int M = fio.nextInt(); // read int
         int N = fio.nextInt(); // read int
-        int[][] adjMatrix = new int[M][N];
+        int[][] grid = new int[M][N];
         for (int i = 0; i < M; i++) {
             for (int j = 0; j < N; j++) {
-                adjMatrix[i][j] = fio.nextInt();
+                grid[i][j] = fio.nextInt();
             }
         }
-        ArrayList<ArrayList<IntegerPair>> adjList = adjMatrixToList(adjMatrix, M, N);
+        ArrayList<ArrayList<IntegerPair>> adjList = gridToAdjList(grid, M, N);
 
         PriorityQueue<IntegerPair> pq = new PriorityQueue<IntegerPair>();
         ArrayList<Integer> largestCost = new ArrayList<Integer>();
@@ -47,14 +47,14 @@ public class millionairemadness {
     }
 
     /**
-     * With a adjMatrix, & its sizes. Convert it into an adjList
+     * With a grid, & its sizes. Convert it into an adjList
      * 
-     * @param adjMatrix
+     * @param grid
      * @param r
      * @param c
      * @return ArrayList<ArrayList<IntegerPair>>
      */
-    static ArrayList<ArrayList<IntegerPair>> adjMatrixToList(int[][] adjMatrix, int r, int c) {
+    static ArrayList<ArrayList<IntegerPair>> gridToAdjList(int[][] grid, int r, int c) {
         int numberOfPilersOfGold = r * c;
 
         ArrayList<ArrayList<IntegerPair>> adjList = new ArrayList<ArrayList<IntegerPair>>();
@@ -76,28 +76,28 @@ public class millionairemadness {
                 check_y = y;
                 adjListItem = countBase - c;
                 if (check_x >= 0) {
-                    updateAdjList(adjMatrix, adjList, x, y, check_x, check_y, adjListItem, countBase);
+                    updateAdjList(grid, adjList, x, y, check_x, check_y, adjListItem, countBase);
                 }
                 // Check Down
                 check_x = x + 1;
                 check_y = y;
                 adjListItem = countBase + c;
                 if (check_x < r) {
-                    updateAdjList(adjMatrix, adjList, x, y, check_x, check_y, adjListItem, countBase);
+                    updateAdjList(grid, adjList, x, y, check_x, check_y, adjListItem, countBase);
                 }
                 // Check Left
                 check_x = x;
                 check_y = y - 1;
                 adjListItem = countBase - 1;
                 if (check_y >= 0) {
-                    updateAdjList(adjMatrix, adjList, x, y, check_x, check_y, adjListItem, countBase);
+                    updateAdjList(grid, adjList, x, y, check_x, check_y, adjListItem, countBase);
                 }
                 // Check Right
                 check_x = x;
                 check_y = y + 1;
                 adjListItem = countBase + 1;
                 if (check_y < c) {
-                    updateAdjList(adjMatrix, adjList, x, y, check_x, check_y, adjListItem, countBase);
+                    updateAdjList(grid, adjList, x, y, check_x, check_y, adjListItem, countBase);
                 }
                 countBase++;
             }
@@ -107,10 +107,10 @@ public class millionairemadness {
     }
 
     /**
-     * Helper function for the AdjMatrix to AdjList. Gets the differences between
+     * Helper function for the grid to AdjList. Gets the differences between
      * the pillars and add it into the list
      * 
-     * @param adjMatrix
+     * @param grid
      * @param adjList
      * @param x
      * @param y
@@ -119,10 +119,10 @@ public class millionairemadness {
      * @param adjListItem
      * @param countBase
      */
-    static void updateAdjList(int[][] adjMatrix,
+    static void updateAdjList(int[][] grid,
             ArrayList<ArrayList<IntegerPair>> adjList,
             int x, int y, int check_x, int check_y, int adjListItem, int countBase) {
-        int checkDifference = adjMatrix[check_x][check_y] - adjMatrix[x][y];
+        int checkDifference = grid[check_x][check_y] - grid[x][y];
         checkDifference = checkDifference < 0 ? 0 : checkDifference;
         adjList.get(countBase).add(new IntegerPair(adjListItem, checkDifference));
     }
