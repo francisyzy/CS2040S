@@ -15,33 +15,25 @@ public class lostmap {
                 adjMatrix[i][j] = fio.nextInt();
             }
         }
-        ArrayList<ArrayList<IntegerPair>> adjList = adjMatrixToList(adjMatrix, n);
+        ArrayList<ArrayList<Edge>> adjList = adjMatrixToList(adjMatrix, n);
 
-        PriorityQueue<IntegerPair> pq = new PriorityQueue<IntegerPair>();
-        ArrayList<Integer> largestCost = new ArrayList<Integer>();
+        PriorityQueue<Edge> pq = new PriorityQueue<Edge>();
         ArrayList<Boolean> taken = new ArrayList<Boolean>();
         taken.addAll(Collections.nCopies(n * n, false)); // set all of the paths as not taken yet
-        int mst_cost = 0;
 
         process(0, adjList, taken, pq);
-        // System.out.println(adjList);
-        while (!pq.isEmpty()) { // we will do this until all V vertices are taken (or E = V-1 edges are taken)
-            IntegerPair front = pq.poll();
+        ArrayList<Edge> MST = new ArrayList<Edge>();
 
-            if (!taken.get(front.y)) { // we have not connected this vertex yet
-                mst_cost += front.x; // add the weight of this edge
-                System.out.println(
-                        "Adding edge: (" + front.x + ", " + front.y + "), MST cost now = " + mst_cost);
-                process(front.y, adjList, taken, pq);
-            } else // this vertex has been connected before via some other tree branch
-                System.out.println(
-                        "Ignoring edge: (" + front.x + ", " + front.y + "), MST cost now = " + mst_cost);
+        while (!pq.isEmpty()) { // we will do this until all V vertices are taken (or E = V-1 edge are taken)
+            Edge front = pq.poll(); // front of the queue
+            if (!taken.get(front.left)) { // we have not connected this vertex yet
+                MST.add(front); // add the edge into the final MST list
+                process(front.left, adjList, taken, pq); // process next
+            }
         }
-        System.out.printf("Final MST cost %d\n", mst_cost);
-
-        // for (int i = 0; i < n - 1; i++) {
-        //     fio.println(i); // print the "..." contents with newline at the end
-        // }
+        for (int i = 0; i < n - 1; i++) {
+            fio.println(MST.get(i).forPrint());
+        }
 
         fio.close(); // important; always close at the end of the code
     }
@@ -52,81 +44,28 @@ public class lostmap {
      * @param adjMatrix
      * @param r
      * @param c
-     * @return ArrayList<ArrayList<IntegerPair>>
+     * @return ArrayList<ArrayList<Edge>>
      */
-    static ArrayList<ArrayList<IntegerPair>> adjMatrixToList(int[][] adjMatrix, int n) {
-        int r = n;
-        int c = n;
-        int numberOfPilersOfGold = r * c;
-
-        ArrayList<ArrayList<IntegerPair>> adjList = new ArrayList<ArrayList<IntegerPair>>();
-        for (int i = 0; i < numberOfPilersOfGold; i++) {
-            adjList.add(new ArrayList<IntegerPair>()); // store blank vector first
+    static ArrayList<ArrayList<Edge>> adjMatrixToList(int[][] adjMatrix, int n) {
+        ArrayList<ArrayList<Edge>> adjList = new ArrayList<ArrayList<Edge>>();
+        for (int i = 0; i < n; i++) {
+            adjList.add(new ArrayList<Edge>()); // store blank vector first
         }
 
-        int countBase = 0;
-        for (int i = 0; i < r; i++) {
-            for (int j = 0; j < c; j++) {
-                final int x = i;
-                final int y = j;
-                int check_x = 0;
-                int check_y = 0;
-                int adjListItem = 0;
-
-                // Check up
-                check_x = x - 1;
-                check_y = y;
-                adjListItem = countBase - c;
-                if (check_x >= 0) {
-                    updateAdjList(adjMatrix, adjList, x, y, check_x, check_y, adjListItem, countBase);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    continue;
                 }
-                // Check Down
-                check_x = x + 1;
-                check_y = y;
-                adjListItem = countBase + c;
-                if (check_x < r) {
-                    updateAdjList(adjMatrix, adjList, x, y, check_x, check_y, adjListItem, countBase);
+                if (i < j) {
+                    continue;
                 }
-                // Check Left
-                check_x = x;
-                check_y = y - 1;
-                adjListItem = countBase - 1;
-                if (check_y >= 0) {
-                    updateAdjList(adjMatrix, adjList, x, y, check_x, check_y, adjListItem, countBase);
-                }
-                // Check Right
-                check_x = x;
-                check_y = y + 1;
-                adjListItem = countBase + 1;
-                if (check_y < c) {
-                    updateAdjList(adjMatrix, adjList, x, y, check_x, check_y, adjListItem, countBase);
-                }
-                countBase++;
+                adjList.get(i).add(new Edge(j, i, adjMatrix[i][j]));
+                adjList.get(j).add(new Edge(i, j, adjMatrix[i][j]));
             }
         }
 
         return adjList;
-    }
-
-    /**
-     * Helper function for the AdjMatrix to AdjList. Gets the differences between
-     * the pillars and add it into the list
-     * 
-     * @param adjMatrix
-     * @param adjList
-     * @param x
-     * @param y
-     * @param check_x
-     * @param check_y
-     * @param adjListItem
-     * @param countBase
-     */
-    static void updateAdjList(int[][] adjMatrix,
-            ArrayList<ArrayList<IntegerPair>> adjList,
-            int x, int y, int check_x, int check_y, int adjListItem, int countBase) {
-        int checkDifference = adjMatrix[check_x][check_y] - adjMatrix[x][y];
-        checkDifference = checkDifference < 0 ? 0 : checkDifference;
-        adjList.get(countBase).add(new IntegerPair(adjListItem, checkDifference));
     }
 
     /**
@@ -137,47 +76,55 @@ public class lostmap {
      * @param taken
      * @param pq
      */
-    static void process(int vtx, ArrayList<ArrayList<IntegerPair>> AdjList, ArrayList<Boolean> taken,
-            PriorityQueue<IntegerPair> pq) {
+    static void process(int vtx, ArrayList<ArrayList<Edge>> AdjList, ArrayList<Boolean> taken,
+            PriorityQueue<Edge> pq) {
         taken.set(vtx, true);
         for (int j = 0; j < AdjList.get(vtx).size(); j++) {
-            IntegerPair v = AdjList.get(vtx).get(j);
-            if (!taken.get(v.x)) {
-                pq.offer(new IntegerPair(v.y, v.x)); // we sort by weight then by adjacent vertex
+            Edge v = AdjList.get(vtx).get(j);
+            if (!taken.get(v.left)) {
+                pq.offer(new Edge(v.left, v.right, v.weight, true)); // we sort by weight then by adjacent vertex
             }
         }
-
     }
 }
 
-class IntegerPair implements Comparable<IntegerPair> {
-    int x, y;
+class Edge implements Comparable<Edge> {
+    public Integer left, right, weight;
+    public boolean orderByWeight;
 
-    IntegerPair(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Edge(Integer left, Integer right, Integer weight) {
+        this.left = left;
+        this.right = right;
+        this.weight = weight;
+        orderByWeight = false;
+    }
+
+    public Edge(Integer left, Integer right, Integer weight, boolean orderByWeight) {
+        this.left = left;
+        this.right = right;
+        this.weight = weight;
+        this.orderByWeight = orderByWeight;
     }
 
     @Override
-    public boolean equals(Object in) {
-        if (this != in) {
-            return false;
+    public int compareTo(Edge o) {
+        if (orderByWeight) {
+            return this.weight - o.weight;
         }
-        return false;
-    }
-
-    @Override
-    public int compareTo(IntegerPair in) {
-        if (this.x != in.x) {
-            return this.x - in.x;
+        if (!this.left.equals(o.left)) {
+            return this.left - o.left;
         } else {
-            return this.y - in.y;
+            return this.right - o.right;
         }
     }
 
     @Override
     public String toString() {
-        return x + " " + y;
+        return "(" + (left + 1) + ", " + (right + 1) + ", W" + weight + ")";
+    }
+
+    public String forPrint() {
+        return (left + 1) + " " + (right + 1);
     }
 }
 

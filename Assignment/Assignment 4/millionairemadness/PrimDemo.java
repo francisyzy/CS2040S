@@ -56,12 +56,14 @@ public class PrimDemo {
     // take any vertex of the graph, for simplicity, vertex 0, to be included in the MST
     process(0);
     int mst_cost = 0;
+    ArrayList < IntegerPair > selected = new ArrayList < IntegerPair >(); // create vector of Integer pair 
     
     while (!pq.isEmpty()) { // we will do this until all V vertices are taken (or E = V-1 edges are taken)
       IntegerPair front = pq.poll();
 
       if (!taken.get(front.second())) { // we have not connected this vertex yet
         mst_cost += front.first(); // add the weight of this edge
+        selected.add(front);
         System.out.println("Adding edge: (" + front.first() + ", " + front.second() + "), MST cost now = " + mst_cost);
         process(front.second());
       }
@@ -69,6 +71,8 @@ public class PrimDemo {
         System.out.println("Ignoring edge: (" + front.first() + ", " + front.second() + "), MST cost now = " + mst_cost);
     }
     
+    System.out.println(selected);
+
     System.out.printf("Final MST cost %d\n", mst_cost);
   }
 }
@@ -91,4 +95,10 @@ class IntegerPair implements Comparable<IntegerPair> {
   Integer first() { return _first; }
 
   Integer second() { return _second; }
+
+  @Override
+  public String toString() {
+    // return "(" + (left() + 1) + ", " + (right() + 1) + ", W" + weight() + ")";
+    return "(" + first() + ", " + second() + ")";
+  }
 }
