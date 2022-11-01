@@ -128,6 +128,111 @@ class Edge implements Comparable<Edge> {
     }
 }
 
+// class lostmap 
+//     psvm 
+//         let n = fio.nextInt
+//         int[][] adjMatrix = new int[n][n]
+//         for (let i = 0; i < n; i++) 
+//             for (let j = 0; j < n; j++) 
+//                 adjMatrix[i][j] = fio.nextInt
+            
+        
+//         ArrayList<ArrayList<Edge>> adjList = adjMatrixToList(adjMatrix, n)
+
+//         PriorityQueue<Edge> pq = new PriorityQueue<Edge>
+//         ArrayList<Boolean> taken = new ArrayList<Boolean>
+//         taken.addAll(Collections.nCopies(n * n, false)) // set all of the paths as not taken yet
+
+//         process(0, adjList, taken, pq)
+//         ArrayList<Edge> MST = new ArrayList<Edge>
+
+//         while (!pq.isEmpty)  // we will do this until all V vertices are taken (or E = V-1 edge are taken)
+//             Edge front = pq.poll; // front of the queue
+//             if (!taken.get(front.left))  // we have not connected this vertex yet
+//                 MST.add(front) // add the edge into the final MST list
+//                 process(front.left, adjList, taken, pq) // process next
+            
+        
+//         for (let i = 0; i < n - 1; i++) 
+//             fio.println(MST.get(i));
+        
+
+//     /**
+//      * With a adjMatrix, & its sizes. Convert it into an adjList
+//      * 
+//      * @param adjMatrix
+//      * @param r
+//      * @param c
+//      * @return ArrayList<ArrayList<Edge>>
+//      */
+//     static ArrayList<ArrayList<Edge>> adjMatrixToList(int[][] adjMatrix, let n) 
+//         ArrayList<ArrayList<Edge>> adjList = new ArrayList<ArrayList<Edge>>
+//         for (let i = 0; i < n; i++) 
+//             adjList.add(new ArrayList<Edge>) // store blank vector first
+        
+
+//         for (let i = 0; i < n; i++) 
+//             for (let j = 0; j < n; j++) 
+//                 if (i == j) 
+//                     continue
+                
+//                 if (i < j) 
+//                     continue
+                
+//                 adjList.get(i).add(new Edge(j, i, adjMatrix[i][j]))
+//                 adjList.get(j).add(new Edge(i, j, adjMatrix[i][j]))
+
+//         return adjList
+    
+
+//     /**
+//      * Process the current vertex and add more items to be process (if applicable)
+//      * 
+//      * @param vtx
+//      * @param AdjList
+//      * @param taken
+//      * @param pq
+//      */
+//     static void process(let vtx, ArrayList<ArrayList<Edge>> AdjList, ArrayList<Boolean> taken,
+//             PriorityQueue<Edge> pq) 
+//         taken.set(vtx, true)
+//         for (let j = 0; j < AdjList.get(vtx).size; j++) 
+//             Edge v = AdjList.get(vtx).get(j)
+//             if (!taken.get(v.left)) 
+//                 pq.offer(new Edge(v.left, v.right, v.weight, true)) // we sort by weight then by adjacent vertex
+
+
+// class Edge implements Comparable<Edge> 
+//     Integer _left, _right, _weight
+//     boolean orderByWeight
+
+//     Edge(Integer left, Integer right, Integer weight) 
+//         _left = left
+//         _right = right
+//         _weight = weight
+//         orderByWeight = false
+    
+
+//     Edge(Integer left, Integer right, Integer weight, boolean orderByWeight) 
+//         _left = left
+//         _right = right
+//         _weight = weight
+//         this.orderByWeight = orderByWeight
+    
+
+//     let compareTo(Edge o) 
+//         if (orderByWeight) 
+//             return this.weight - o.weight
+        
+//         if (!this.left.equals(o.left)) 
+//             return this.left - o.left
+//          else 
+//             return this.right - o.right
+        
+//     @Override
+//     String toString 
+//         return "(" + (left + 1) + ", " + (right + 1) + ", W" + weight + ")"
+
 /**
  * Fast I/O
  * 
