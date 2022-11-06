@@ -2,6 +2,10 @@ import java.util.*;
 import java.io.*;
 
 public class BellmanFordDemo {
+  public static final int CANNON_LAUNCH_TIME = 2; // MAGIC NUMBERS!
+  public static final int RUNNING_RATE = 5; // meter per second
+  public static final int CANNOT_DISTANCE = 50; // meters
+  public static final int source = 0; // starting pos
   public static final double INF = 1000000000.0;
   // public static ArrayList< ArrayList< IntegerPair > > AdjList = new ArrayList<
   // ArrayList< IntegerPair > >();
@@ -34,136 +38,70 @@ public class BellmanFordDemo {
   }
 
   public static void main(String[] args) {
-    /*
-     * // standard sample graph
-     * 5 7 0
-     * 1 4 6
-     * 1 3 3
-     * 0 1 2
-     * 2 4 1
-     * 0 2 6
-     * 3 4 5
-     * 0 3 7
-     * 
-     * // graph with negative weight cycle
-     * 5 5 0
-     * 0 1 99
-     * 1 2 15
-     * 2 1 -42
-     * 2 3 10
-     * 0 4 -99
-     * 
-     * // BFS challenge
-     * 5 6 0
-     * 0 1 2
-     * 1 3 3
-     * 3 4 2
-     * 0 2 9
-     * 2 4 9
-     * 4 2 1
-     * 
-     * // has negative weight edge but no negative weight cycle
-     * 3 3 0
-     * 0 1 -10
-     * 1 2 -15
-     * 0 2 -20
-     */
+    FastIO fio = new FastIO(); // create new instance
 
-    Scanner sc = new Scanner(System.in); // Copy paste the examples above to a file and redirect as input to
-                                         // BellmanFordDemo.class
-    V = sc.nextInt();
-    E = sc.nextInt();
-    int source = sc.nextInt();
+    PointOfInterest initial = new PointOfInterest(fio.nextDouble(), fio.nextDouble(), 1);
+    PointOfInterest destination = new PointOfInterest(fio.nextDouble(), fio.nextDouble(), 2);
+    int n = fio.nextInt(); // 0 to 100
+    V = n + 2;
 
-    // AdjList.clear();
+    ArrayList<PointOfInterest> positions = new ArrayList<>(n + 2);
+    positions.add(initial);
+    positions.add(destination);
+    for (int i = 0; i < n; i++) {
+      PointOfInterest cannon = new PointOfInterest(fio.nextDouble(), fio.nextDouble(), 3);
+      positions.add(cannon);
+    }
     ArrayList<IntegerTriple> edgeList = new ArrayList<>();
-    // for (int i = 0; i < V; i++) {
-    // ArrayList< IntegerPair > Neighbor = new ArrayList < IntegerPair >();
-    // AdjList.add(Neighbor); // add neighbor list to Adjacency List
-    // }
-
-    for (int i = 0; i < E; i++) {
-      int u = sc.nextInt(), v = sc.nextInt();
-      double w = sc.nextDouble();
-      // AdjList.get(u).add(new IntegerPair(v, w));
-      edgeList.add(new IntegerTriple(u, v, w));
+    for (int i = 0; i < positions.size(); i++) {
+      for (int j = 0; j < positions.size(); j++) {
+        PointOfInterest p1 = positions.get(i);
+        PointOfInterest p2 = positions.get(j);
+        double distance = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+        double time1 = distance / RUNNING_RATE;
+        double time2 = Double.MAX_VALUE;
+        if (p1.isCannon()) {
+          time2 = CANNON_LAUNCH_TIME + (Math.abs(distance - CANNOT_DISTANCE) / RUNNING_RATE);
+        }
+        edgeList.add(new IntegerTriple(i, j, Math.min(time1, time2)));
+      }
     }
 
     initSSSP(source);
 
-    // Bellman Ford's routine, implemented using AdjList (note that you can choose
-    // to use EdgeList -- similar performance)
     for (int i = 0; i < V - 1; i++) // relax all E edges V-1 times, O(V)
       for (IntegerTriple integerTriple : edgeList) {
         relax(integerTriple.first(), integerTriple.second(), integerTriple.third()); // O(1) here
       }
-    // for i = 1 to |V|-1 // O(V) here
-    // for each edge(u, v) ∈ E // O(E) here
-    // relax(u, v, w(u,v)) // O(1) here
-    // for (int i = 0; i < V-1; i++) // relax all E edges V-1 times, O(V)
-    // for (int u = 0; u < V; u++) // these two loops = O(E)
-    // for (int j = 0; j < edgeList.size(); j++) {
-    // IntegerTriple v = edgeList.get(u);
-    // relax(u, v.first(), v.second());
-    // }
-    // for (int j = 0; j < AdjList.get(u).size(); j++) {
-    // IntegerPair v = AdjList.get(u).get(j);
-    // relax(u, v.first(), v.second());
-    // }
 
-    // bonus: negative cycle test
-    // boolean negative_cycle_exist = false;
-    // for (int u = 0; u < V; u++) // one more pass to check
-    // for (int j = 0; j < AdjList.get(u).size(); j++) {
-    // IntegerPair v = AdjList.get(u).get(j); // try relaxing this edge one more
-    // time
-    // if (D.get(u) != INF && D.get(v.first()) > D.get(u) + v.second())
-    // negative_cycle_exist = true; // if this is true, then negative cycle exists!
-    // }
 
-    // System.out.printf("Negative Cycle Exist? %s\n", negative_cycle_exist ? "Yes"
-    // : "No");
-    // if (!negative_cycle_exist) {
-    int end = 2;
-    System.out.printf("SSSP(%d, %d) = %.6f\n", source, end, D.get(end));
-    // for (int i = 0; i < V; i++) {
-    // System.out.printf("SSSP(%d, %d) = %.6f\n", source, i, D.get(i));
-    // if (D.get(i) != INF) {
-    // System.out.printf("Path: ");
-    // backtrack(source, i);
-    // System.out.printf("\n");
-    // }
-    // System.out.printf("\n");
-    // }
-    // }
+    int end = 1;
+    System.out.printf("%.6f\n", D.get(end));
   }
 }
 
-class IntegerPair implements Comparable<IntegerPair> {
-  Integer _first, _second;
+class PointOfInterest {
+  double x, y;
+  int type; // 1 = start 2 = end 3 = cannon
 
-  public IntegerPair(Integer f, Integer s) {
-    _first = f;
-    _second = s;
+  PointOfInterest(double x, double y, int type) {
+    this.x = x;
+    this.y = y;
+    this.type = type;
   }
 
-  public int compareTo(IntegerPair o) {
-    if (!this.first().equals(o.first()))
-      return this.first() - o.first();
-    else
-      return this.second() - o.second();
+  boolean isCannon() {
+    return this.type == 3;
   }
 
-  Integer first() {
-    return _first;
-  }
-
-  Integer second() {
-    return _second;
+  @Override
+  public String toString() {
+    return this.x + " " + this.y;
   }
 }
 
-class IntegerTriple implements Comparable<IntegerTriple> {
+
+class IntegerTriple {
   public Integer _first, _second;
   Double _third;
 
@@ -196,5 +134,53 @@ class IntegerTriple implements Comparable<IntegerTriple> {
 
   public String toString() {
     return first() + " " + second() + " " + third();
+  }
+}
+
+/**
+ * Fast I/O
+ * 
+ * @source https://www.geeksforgeeks.org/fast-io-in-java-in-competitive-programming/
+ */
+class FastIO extends PrintWriter {
+  BufferedReader br;
+  StringTokenizer st;
+
+  public FastIO() {
+    super(new BufferedOutputStream(System.out));
+    br = new BufferedReader(new InputStreamReader(System.in));
+  }
+
+  String next() {
+    while (st == null || !st.hasMoreElements()) {
+      try {
+        st = new StringTokenizer(br.readLine());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return st.nextToken();
+  }
+
+  int nextInt() {
+    return Integer.parseInt(next());
+  }
+
+  long nextLong() {
+    return Long.parseLong(next());
+  }
+
+  double nextDouble() {
+    return Double.parseDouble(next());
+  }
+
+  String nextLine() {
+    String str = "";
+    try {
+      str = br.readLine();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return str;
   }
 }
