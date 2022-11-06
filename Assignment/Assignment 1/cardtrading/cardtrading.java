@@ -1,4 +1,4 @@
-***REMOVED***
+
 import java.util.*;
 
 public class cardtrading {
